@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView android:id="@+id/title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#0b0cff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoText="false"/>
+
+    <TextView android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/done_button"
+        android:src="@drawable/trash_bin"
+        android:adjustViewBounds="true"
+        android:layout_alignParentRight="true" />
+
+
+</RelativeLayout>
