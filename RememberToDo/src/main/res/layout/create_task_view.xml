@@ -5,7 +5,8 @@
     android:layout_height="fill_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    style="@style/Theme.AppCompat">
+    style="@style/Theme.AppCompat"
+    android:id="@+id/mainLayout">
 
     <EditText android:id="@+id/title"
         android:layout_width="fill_parent"
@@ -17,35 +18,27 @@
         android:layout_marginTop="37dp" />
 
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/add_voice_button"
         android:src="@drawable/microphone"
         android:adjustViewBounds="true"
-        android:layout_above="@+id/create_task_button"
+        android:layout_alignBottom="@+id/title"
         android:layout_alignRight="@+id/title"
-        android:layout_alignEnd="@+id/title"
-        android:layout_alignParentTop="true" />
+        android:layout_alignEnd="@+id/title" />
 
 
-    <Button
-        android:id="@+id/create_task_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_create"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/title"
-        android:layout_alignRight="@+id/add_image_button"
-        android:layout_alignEnd="@+id/add_image_button" />
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/add_clock_reminder"
-            android:src="@drawable/alarm_clock"
+            android:src="@drawable/alarmclock_gray"
             android:adjustViewBounds="true"
-            android:layout_below="@+id/create_task_button"
-            android:layout_toLeftOf="@+id/location_reminder_button" />
+        android:layout_below="@+id/title"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="45dp" />
 
         <TextView android:id="@+id/clock_reminder_txt"
             android:textSize="15sp"
@@ -59,17 +52,16 @@
             android:layout_alignLeft="@+id/location_reminder_button"
             android:layout_alignStart="@+id/location_reminder_button" />
 
-
-
-
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/location_reminder_button"
-            android:src="@drawable/map"
+            android:src="@drawable/map_gray"
             android:adjustViewBounds="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/create_task_button" />
+            android:layout_below="@+id/clock_reminder_txt"
+            android:layout_toRightOf="@+id/add_clock_reminder"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp" />
 
         <TextView android:id="@+id/location_reminder_txt"
             android:textSize="15sp"
@@ -86,25 +78,27 @@
 
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/add_image_button"
-            android:src="@drawable/camera"
+            android:src="@drawable/camera_gray"
             android:adjustViewBounds="true"
-            android:layout_marginTop="46dp"
             android:layout_below="@+id/location_reminder_txt"
-            android:layout_centerHorizontal="true" />
+            android:layout_toRightOf="@+id/location_reminder_button"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp" />
 
 
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/priority_button"
             android:src="@drawable/exclamation_mark_gray"
             android:adjustViewBounds="true"
             android:layout_below="@+id/add_image_button"
-            android:layout_toLeftOf="@+id/add_voice_button"
-            android:layout_marginTop="38dp" />
+            android:layout_toRightOf="@+id/add_image_button"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp" />
 
 </RelativeLayout>

@@ -17,6 +17,8 @@
 
     <string name="no_tasks">No Tasks</string>
     <string name="action_add">Add Task</string>
+    <string name="action_create">Create</string>
+    <string name="action_update">Update</string>
     <string name="action_delete">Delete Task</string>
     <string name="action_edit">Edit Task</string>
     <string name="action_share">Share Task</string>
