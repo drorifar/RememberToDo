@@ -38,7 +38,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
             holder.img_cam = (ImageView) convertView.findViewById(R.id.camera);
             holder.img_clock = (ImageView) convertView.findViewById(R.id.alarm_clock);
             holder.img_map = (ImageView) convertView.findViewById(R.id.map);
-            holder.attachments = (LinearLayout) convertView.findViewById(R.id.attachmentsLayout);
             holder.bt_done = (ImageView) convertView.findViewById(R.id.done_button);
 
             holder.bt_done.setOnClickListener(doneButtonOnClickListener);
@@ -140,7 +139,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
         ImageView img_map;
         ImageView img_cam;
         ImageView bt_done;
-        LinearLayout attachments;
     }
 
 
