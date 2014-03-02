@@ -14,6 +14,12 @@
         android:layout_height="wrap_content"
         android:hint="@string/enter_location"
         />
+    <Button
+        android:id="@+id/set_location"
+        android:layout_width="131dp"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:layout_gravity="right" />
 
     <TextView
         android:padding="15dp"
