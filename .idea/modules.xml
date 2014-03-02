@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RememberToDo.iml" filepath="$PROJECT_DIR$/RememberToDo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RememberToDo/RememberToDo-RememberToDo.iml" filepath="$PROJECT_DIR$/RememberToDo/RememberToDo-RememberToDo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RememberToDo-master.iml" filepath="$PROJECT_DIR$/RememberToDo-master.iml" />
+    </modules>
+  </component>
+</project>
+
