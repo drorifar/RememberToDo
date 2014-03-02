@@ -116,9 +116,6 @@ public class TaskListActivity extends ActionBarActivity {
     }
 
 
-
-
-
     private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called

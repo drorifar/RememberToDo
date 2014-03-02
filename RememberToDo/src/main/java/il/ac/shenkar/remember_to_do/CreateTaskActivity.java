@@ -12,11 +12,15 @@ import android.content.pm.ResolveInfo;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -56,6 +60,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     TimePicker timePicker = null;
     DatePicker datePicker = null;
     Calendar calendar;
+    String stringTimeReminder = "";
 
     //boolean flag for set reminder
     boolean isReminder;
@@ -76,29 +81,11 @@ public class CreateTaskActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task_view);
 
-        final Button createNewTaskButton = (Button) findViewById(R.id.create_task_button);
-
         Intent receiveDataIntent = getIntent();
         Bundle receivedDataBundle = receiveDataIntent.getExtras();
-        if (receivedDataBundle != null)
-        {
+        if (receivedDataBundle != null)  {
             isEdit = true;
-            createNewTaskButton.setText("Update");
-            createNewTaskButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTask(view);
-                }
-            });
-        }
-        else
-        {
-            createNewTaskButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    createTask(view);
-                }
-            });
+
         }
         //set reminder button listener
         final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
@@ -139,6 +126,26 @@ public class CreateTaskActivity extends ActionBarActivity {
             final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
             setReminderButton.setImageResource(R.drawable.alarmclock_gray);
         }
+        else
+        {
+            final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
+            setReminderButton.setImageResource(R.drawable.alarm_clock);
+            final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
+            setReminderTxt.setText(existTask.getDate());
+            stringTimeReminder = existTask.getDate();
+        }
+
+        if (existTask.getLocation()== null || existTask.getLocation().isEmpty()) {
+            final ImageView setReminderButton = (ImageView) findViewById(R.id.location_reminder_button);
+            setReminderButton.setImageResource(R.drawable.map_gray);
+        }
+        else
+        {
+            final ImageView setReminderButton = (ImageView) findViewById(R.id.location_reminder_button);
+            setReminderButton.setImageResource(R.drawable.map);
+            final TextView setReminderTxt = (TextView) findViewById(R.id.location_reminder_txt);
+            setReminderTxt.setText(existTask.getLocation());
+        }
 
         if(existTask.isPriority())
         {
@@ -162,13 +169,10 @@ public class CreateTaskActivity extends ActionBarActivity {
         EditText editTextTitle = (EditText) findViewById(R.id.title);
         String title = editTextTitle.getText().toString();
 
-        String date = "";
-        if (calendar != null)
-            date = getDateTime();
 
         Long id = System.currentTimeMillis();
 
-        Task updatedTask = new Task(id, title, date,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam);
+        Task updatedTask = new Task(id, title, stringTimeReminder,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam);
         updatedTask.setId(taskId);
 
         //update task to DB
@@ -177,7 +181,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         //user set reminder
         if(isReminder){
-            setReminder(id, title, date);
+            setReminder(id, title, stringTimeReminder);
         }
 
         finish();
@@ -220,9 +224,12 @@ public class CreateTaskActivity extends ActionBarActivity {
                     calendar = Calendar.getInstance();
                     calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
                             timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
+                    stringTimeReminder = getDateTime(calendar);
                     picker.dismiss();
                     final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
                     setReminderButton.setImageResource(R.drawable.alarm_clock);
+                    final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
+                    setReminderTxt.setText(stringTimeReminder);
                 }
             });
             picker.show();
@@ -408,20 +415,17 @@ public class CreateTaskActivity extends ActionBarActivity {
         EditText editTextTitle = (EditText) findViewById(R.id.title);
         String title = editTextTitle.getText().toString();
 
-        String date = "";
-        if (calendar != null)
-         date = getDateTime();
 
         Long id = System.currentTimeMillis();
 
         //add task to DB
-        dao.addTask( new Task(id, title, date,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam));
+        dao.addTask( new Task(id, title, stringTimeReminder,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam));
 
         Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
 
         //user set reminder
         if(isReminder){
-           setReminder(id, title, date);
+           setReminder(id, title, stringTimeReminder);
         }
         finish();
     }
@@ -454,11 +458,36 @@ public class CreateTaskActivity extends ActionBarActivity {
      * Gets the current time and converts it to String using DateFormat
      * @return String that represent current time
      */
-    public String getDateTime() {
+    public String getDateTime(Calendar cal) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "EEE, dd/MM/yyyy, kk:mm:ss", Locale.getDefault());
-        Date d = calendar.getTime();
+        Date d = cal.getTime();
         return dateFormat.format(d);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        if (isEdit)
+               inflater.inflate(R.menu.edit_menu, menu);
+        else inflater.inflate(R.menu.add_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_createTask:
+                createTask(getCurrentFocus());
+                return true;
+            case R.id.action_editTask:
+                editTask(getCurrentFocus());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
