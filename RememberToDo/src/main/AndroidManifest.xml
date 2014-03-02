@@ -44,14 +44,6 @@
         </activity>
 
         <activity
-            android:name=".EditTaskActivity"
-            android:parentActivityName=".TaskListActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TaskListActivity" />
-        </activity>
-
-        <activity
             android:name=".CreateTaskActivity"
             android:label="@string/title_activity_task"
             android:theme="@style/Theme.AppCompat.Light" >
