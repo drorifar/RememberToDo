@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <application>
+        <activity android:name=".........RememberToDo.src.main.java.il.ac.shenkar.remember_to_do.LocationActivity"
+            android:label="@string/title_activity_location"
+            >
+        </activity>
+    </application>
+
+</manifest>
