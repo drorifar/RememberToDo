@@ -57,6 +57,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
         holder.txt_itemName.setText(getItem(position).getTitle());
 
         String date = getItem(position).getDate();
+        String loaction = getItem(position).getLocation();
         Uri imageUri = getItem(position).getImageUri();
 
         if (imageUri == null)
@@ -81,7 +82,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
             holder.txt_time.setText(date);
         }
 
-        if (date == null || date.isEmpty())
+        if (loaction == null || loaction.isEmpty())
         {
             holder.txt_location.setVisibility(View.INVISIBLE);
             holder.img_map.setVisibility(View.INVISIBLE);
@@ -90,7 +91,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
         {
             holder.txt_location.setVisibility(View.VISIBLE);
             holder.img_map.setVisibility(View.VISIBLE);
-            holder.txt_location.setText(date);
+            holder.txt_location.setText(loaction);
         }
 
         if (!getItem(position).isPriority()) {

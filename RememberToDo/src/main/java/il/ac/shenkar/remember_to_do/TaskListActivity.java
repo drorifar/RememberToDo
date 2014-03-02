@@ -156,7 +156,6 @@ public class TaskListActivity extends ActionBarActivity {
                     return true;
 
                 case R.id.action_edit: //edit the list item in the selected position
-                    //create the bundle in order to pass the wanted information to the edit activity
                     editTask(selectedItemPosition);
                     mode.finish(); // Action picked, so close the CAB
                     return true;

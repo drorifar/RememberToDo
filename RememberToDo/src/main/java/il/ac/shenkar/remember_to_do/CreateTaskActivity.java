@@ -50,6 +50,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     private static final int CAMERA_PICTURE_REQUEST = 1;
     private static final int GALLERY_PICTURE_REQUEST = 2;
     private static final int VR_REQUEST = 3;
+    private static final int LOCATION_ACTIVITY_REQUEST = 4;
 
     boolean isEdit = false;
     int taskPosition;
@@ -61,6 +62,8 @@ public class CreateTaskActivity extends ActionBarActivity {
     DatePicker datePicker = null;
     Calendar calendar;
     String stringTimeReminder = "";
+
+    String location ="";
 
     //boolean flag for set reminder
     boolean isReminder;
@@ -115,6 +118,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     }
 
     private void setExistTaskDetail(Bundle receivedDataBundle) {
+
         final TaskDAO dao = TaskDAO.getInstance(this);
         taskPosition = receivedDataBundle.getInt("position");
         Task existTask = dao.getItem(taskPosition);
@@ -136,15 +140,16 @@ public class CreateTaskActivity extends ActionBarActivity {
         }
 
         if (existTask.getLocation()== null || existTask.getLocation().isEmpty()) {
-            final ImageView setReminderButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setReminderButton.setImageResource(R.drawable.map_gray);
+            final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
+            setLocationButton.setImageResource(R.drawable.map_gray);
         }
         else
         {
-            final ImageView setReminderButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setReminderButton.setImageResource(R.drawable.map);
-            final TextView setReminderTxt = (TextView) findViewById(R.id.location_reminder_txt);
-            setReminderTxt.setText(existTask.getLocation());
+            location = existTask.getLocation();
+            final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
+            setLocationButton.setImageResource(R.drawable.map);
+            final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
+            setLocationTxt.setText(location);
         }
 
         if(existTask.isPriority())
@@ -172,7 +177,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         Long id = System.currentTimeMillis();
 
-        Task updatedTask = new Task(id, title, stringTimeReminder,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam);
+        Task updatedTask = new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam);
         updatedTask.setId(taskId);
 
         //update task to DB
@@ -194,10 +199,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View v) {
-            picker = new Dialog(CreateTaskActivity.this);
-            picker.setContentView(R.layout.location_picker);
-            picker.setTitle("Select Location");
-            picker.show();
+            startActivityForResult(new Intent(CreateTaskActivity.this, LocationActivity.class), LOCATION_ACTIVITY_REQUEST);
         }
     };
 
@@ -216,6 +218,7 @@ public class CreateTaskActivity extends ActionBarActivity {
             timePicker = (TimePicker)picker.findViewById(R.id.timePicker);
             timePicker.setIs24HourView(true);
             Button setDateTime = (Button)picker.findViewById(R.id.set_date_time);
+            Button clearDateTime = (Button)picker.findViewById(R.id.clear);
 
             setDateTime.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -228,6 +231,18 @@ public class CreateTaskActivity extends ActionBarActivity {
                     picker.dismiss();
                     final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
                     setReminderButton.setImageResource(R.drawable.alarm_clock);
+                    final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
+                    setReminderTxt.setText(stringTimeReminder);
+                }
+            });
+            clearDateTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    isReminder = false;
+                    stringTimeReminder = "";
+                    picker.dismiss();
+                    final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
+                    setReminderButton.setImageResource(R.drawable.alarmclock_gray);
                     final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
                     setReminderTxt.setText(stringTimeReminder);
                 }
@@ -307,7 +322,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         final ImageView preview = (ImageView) findViewById(R.id.add_image_button);
 
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) { 
             if(data.getData() != null){
                 selectedImageUri = data.getData();
             }
@@ -340,6 +355,16 @@ public class CreateTaskActivity extends ActionBarActivity {
                     titleText.setText(suggestedWords.get(0));
                 }
             }
+            else if (requestCode == LOCATION_ACTIVITY_REQUEST ) {
+                //store the returned word list as an ArrayList
+                Bundle bundle = data.getExtras();
+                location = bundle.getString("location");
+                final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
+                setLocationButton.setImageResource(R.drawable.map);
+                final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
+                setLocationTxt.setText(location);
+            }
+
         }
     }
 
@@ -419,7 +444,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         Long id = System.currentTimeMillis();
 
         //add task to DB
-        dao.addTask( new Task(id, title, stringTimeReminder,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam));
+        dao.addTask( new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam));
 
         Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
 
