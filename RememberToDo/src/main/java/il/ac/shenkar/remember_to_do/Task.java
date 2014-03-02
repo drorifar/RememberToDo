@@ -12,16 +12,20 @@ public class Task {
     private Uri imageUri;
     private boolean isPriority;
     private String location;
+    private String imagePath;
+    private boolean isPicFromCam;
 
     public Task(){}
 
-    public Task(Long id, String title, String date, String location, Uri imageUri, boolean isPriority){
+    public Task(Long id, String title, String date, String location, Uri imageUri, boolean isPriority, String imgPath, boolean isPicFromCam){
         setId(id);
         setTitle(title);
         setDate(date);
         setImageUri(imageUri);
         setPriority(isPriority);
         setLocation(location);
+        setImagePath(imgPath);
+        setPicFromCam(isPicFromCam);
     }
 
 
@@ -77,5 +81,21 @@ public class Task {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public boolean isPicFromCam() {
+        return isPicFromCam;
+    }
+
+    public void setPicFromCam(boolean isCamera) {
+        this.isPicFromCam = isCamera;
     }
 }

@@ -62,7 +62,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
         if (imageUri == null)
         {
-            holder.img_cam.setVisibility(View.GONE);
+            holder.img_cam.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -72,8 +72,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
         if (date == null || date.isEmpty())
         {
-            holder.txt_time.setVisibility(View.GONE);
-            holder.img_clock.setVisibility(View.GONE);
+            holder.txt_time.setVisibility(View.INVISIBLE);
+            holder.img_clock.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -84,8 +84,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
         if (date == null || date.isEmpty())
         {
-            holder.txt_location.setVisibility(View.GONE);
-            holder.img_map.setVisibility(View.GONE);
+            holder.txt_location.setVisibility(View.INVISIBLE);
+            holder.img_map.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -94,8 +94,10 @@ public class TaskListBaseAdapter extends BaseAdapter {
             holder.txt_location.setText(date);
         }
 
-        if (!getItem(position).isPriority())
-            holder.img_priority.setVisibility(View.GONE);
+        if (!getItem(position).isPriority()) {
+            holder.img_priority.setVisibility(View.INVISIBLE);
+        }
+        else holder.img_priority.setVisibility(View.VISIBLE);
 
         holder.bt_done.setTag(position);
     }
@@ -123,7 +125,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
     private final View.OnClickListener doneButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             int position = (Integer) v.getTag();
             dao.deleteTask(getItem(position));
             notifyDataSetChanged();

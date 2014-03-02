@@ -23,7 +23,7 @@ public class TaskListActivity extends ActionBarActivity {
 
     private Context context;
     TaskListBaseAdapter adapter = null;
-
+    private TaskDAO dao;
     public TaskListActivity() {}
 
     @Override
@@ -34,7 +34,7 @@ public class TaskListActivity extends ActionBarActivity {
 
         context = this;
 
-        final TaskDAO dao = TaskDAO.getInstance(this);
+        dao = TaskDAO.getInstance(this);
 
         ListView listView = (ListView) findViewById(R.id.listV_main);
         listView.setEmptyView(findViewById(R.id.emptyView));
@@ -72,7 +72,7 @@ public class TaskListActivity extends ActionBarActivity {
             }
         });
 
-    // long click on one row
+     // long click on one row
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             // Called when the user long-clicks on someView
             public boolean onItemLongClick(AdapterView<?> p, View view, int pos, long id) {
@@ -83,9 +83,14 @@ public class TaskListActivity extends ActionBarActivity {
     }
 
     public void editTask (int position){
-        //create the bundle in order to pass the wanted information to the edit activity
-        Toast.makeText(getBaseContext(), "short", Toast.LENGTH_SHORT).show();
-    }
+        Bundle taskDetailsBundle = new Bundle();
+        taskDetailsBundle.putInt("position",position);
+        taskDetailsBundle.putLong("id",dao.getItem(position).getId());
+        Intent passDataIntent=new Intent(getApplicationContext(),CreateTaskActivity.class);
+        passDataIntent.putExtras(taskDetailsBundle);
+        //start edit selected list item activity
+        startActivity(passDataIntent);
+        }
 
     @Override
     public void onResume(){

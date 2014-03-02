@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,11 +63,17 @@ public class TaskDAO implements ITaskDAO  {
 
         ContentValues values = new ContentValues();
         values.put(TaskTable.COLUMN_TITLE, taskObj.getTitle());
-        if (taskObj.getImageUri()!=null)
-        {
-            String selectedPath = taskObj.getImageUri().getPath();
-            values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
+        if (taskObj.getImageUri()!=null) {
+            if (taskObj.isPicFromCam()) {
+                String selectedPath = taskObj.getImageUri().getPath();
+                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
+            }
+            else {
+                String selectedPath = taskObj.getImagePath();
+                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
+            }
         }
+
         values.put(TaskTable.COLUMN_DATE, taskObj.getDate());
         String isPriority = "false";
         if (taskObj.isPriority())
@@ -123,9 +128,11 @@ public class TaskDAO implements ITaskDAO  {
                 taskDetails.setTitle(cursor.getString(1));
                 taskDetails.setDate(cursor.getString(2));
                 taskDetails.setLocation(cursor.getString(3));
-                String imgPath = (cursor.getString(4));
-                if (imgPath != null && !imgPath.isEmpty())
-                        taskDetails.setImageUri(Uri.fromFile(new File(imgPath)));
+                taskDetails.setImagePath(cursor.getString(4));
+                if (taskDetails.getImagePath() != null && !taskDetails.getImagePath().isEmpty())
+                {
+                        taskDetails.setImageUri(Uri.fromFile(new File(taskDetails.getImagePath())));
+                }
                 String isPriority = (cursor.getString(5));
                 if (isPriority != null && !isPriority.isEmpty())
                     taskDetails.setPriorityFromString(isPriority);
@@ -152,7 +159,37 @@ public class TaskDAO implements ITaskDAO  {
     }
 
     //get items from new to old
-    public Task getItem(int i){
-        return taskList.get(taskList.size()-i-1);
+    public Task getItem(int position){
+        return taskList.get(taskList.size()-position -1);
+    }
+
+    public void updateTask(Task updatedTask, int position){
+
+        taskList.set (taskList.size() -1 - position, updatedTask);
+
+        database = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TaskTable.COLUMN_TITLE, updatedTask.getTitle());
+        if (updatedTask.getImageUri()!=null) {
+            if (updatedTask.isPicFromCam()) {
+                String selectedPath = updatedTask.getImageUri().getPath();
+                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
+            }
+            else {
+                String selectedPath = updatedTask.getImagePath();
+                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
+            }
+        }
+        values.put(TaskTable.COLUMN_DATE, updatedTask.getDate());
+        String isPriority = "false";
+        if (updatedTask.isPriority())
+        {
+            isPriority = "true";
+        }
+        values.put(TaskTable.COLUMN_PRIORITY, isPriority);
+
+        database.update(TaskTable.TABLE_TASKS, values, TaskTable.COLUMN_ID + "=" + updatedTask.getId(), null);
+        database.close();
     }
 }

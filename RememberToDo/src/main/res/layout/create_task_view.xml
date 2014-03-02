@@ -23,9 +23,9 @@
         android:id="@+id/add_clock_reminder"
         android:src="@drawable/alarm_clock"
         android:adjustViewBounds="true"
-        android:layout_alignTop="@+id/add_image_button"
-        android:layout_alignRight="@+id/imageView1"
-        android:layout_alignEnd="@+id/imageView1" />
+        android:layout_below="@+id/location_reminder_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <!-- Add Image -->
     <ImageView
@@ -34,10 +34,9 @@
         android:id="@+id/add_image_button"
         android:src="@drawable/camera"
         android:adjustViewBounds="true"
-        android:layout_above="@+id/imageView1"
-        android:layout_alignLeft="@+id/add_image_button"
-        android:layout_alignStart="@+id/add_image_button"
-        android:layout_marginBottom="55dp" />
+        android:layout_marginBottom="143dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/location_reminder_button" />
 
     <!-- Priority -->
     <ImageView
@@ -46,9 +45,8 @@
         android:id="@+id/priority_button"
         android:src="@drawable/exclamation_mark_gray"
         android:adjustViewBounds="true"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/imageView1"
-        android:layout_marginRight="30dp" />
+        android:layout_below="@+id/add_clock_reminder"
+        android:layout_toRightOf="@+id/add_clock_reminder" />
 
     <!-- add_voice_button -->
     <ImageView
@@ -57,10 +55,10 @@
         android:id="@+id/add_voice_button"
         android:src="@drawable/microphone"
         android:adjustViewBounds="true"
-        android:layout_alignTop="@+id/destination_reminder_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="27dp" />
+        android:layout_above="@+id/create_task_button"
+        android:layout_alignRight="@+id/title"
+        android:layout_alignEnd="@+id/title"
+        android:layout_alignParentTop="true" />
 
     <!-- destination_reminder_button -->
     <ImageView
@@ -69,12 +67,8 @@
         android:id="@+id/location_reminder_button"
         android:src="@drawable/map"
         android:adjustViewBounds="true"
-        android:layout_marginTop="46dp"
-        android:layout_marginLeft="31dp"
-        android:layout_below="@+id/title"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/add_image_button" />
+        android:layout_above="@+id/add_image_button"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/create_task_button"
@@ -82,8 +76,9 @@
         android:layout_height="wrap_content"
         android:text="@string/button_create"
         android:layout_gravity="center_horizontal"
-        android:layout_alignBottom="@+id/imageView1"
-        android:layout_alignTop="@+id/imageView1"
-        android:layout_toLeftOf="@+id/priority_button_button" />
+        android:layout_below="@+id/title"
+        android:layout_alignRight="@+id/location_reminder_button"
+        android:layout_alignEnd="@+id/location_reminder_button"
+        android:layout_toRightOf="@+id/add_clock_reminder" />
 
 </RelativeLayout>

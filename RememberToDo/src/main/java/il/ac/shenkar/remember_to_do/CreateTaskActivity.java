@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Locale;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -44,9 +43,13 @@ public class CreateTaskActivity extends ActionBarActivity {
 
     public final static String EXTRA_LIST = "il.ac.shenkar.totodo.LIST";
 
-    private static final int CAMERA_PICTURE = 1;
-    private static final int GALLERY_PICTURE = 2;
+    private static final int CAMERA_PICTURE_REQUEST = 1;
+    private static final int GALLERY_PICTURE_REQUEST = 2;
     private static final int VR_REQUEST = 3;
+
+    boolean isEdit = false;
+    int taskPosition;
+    long taskId;
 
     // Date & Time verbs
     Dialog picker = null;
@@ -60,6 +63,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     //add pic verb
     Uri selectedImageUri;
     String  selectedPath;
+    boolean isPicFromCam = false;
 
     //is priority flag
     boolean isPriority = false;
@@ -72,15 +76,30 @@ public class CreateTaskActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task_view);
 
-        //create task button listener
         final Button createNewTaskButton = (Button) findViewById(R.id.create_task_button);
-        createNewTaskButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createTask(view);
-            }
-        });
 
+        Intent receiveDataIntent = getIntent();
+        Bundle receivedDataBundle = receiveDataIntent.getExtras();
+        if (receivedDataBundle != null)
+        {
+            isEdit = true;
+            createNewTaskButton.setText("Update");
+            createNewTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    editTask(view);
+                }
+            });
+        }
+        else
+        {
+            createNewTaskButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    createTask(view);
+                }
+            });
+        }
         //set reminder button listener
         final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
         setReminderButton.setOnClickListener(setReminderButtonListener);
@@ -101,6 +120,67 @@ public class CreateTaskActivity extends ActionBarActivity {
         final ImageView setPriorityButton = (ImageView) findViewById(R.id.priority_button);
         setPriorityButton.setOnClickListener(setPriorityButtonListener);
 
+        if (isEdit)
+        {
+            setExistTaskDetail(receivedDataBundle);
+        }
+
+    }
+
+    private void setExistTaskDetail(Bundle receivedDataBundle) {
+        final TaskDAO dao = TaskDAO.getInstance(this);
+        taskPosition = receivedDataBundle.getInt("position");
+        Task existTask = dao.getItem(taskPosition);
+
+        final EditText titleText = (EditText) findViewById(R.id.title);
+        titleText.setText(existTask.getTitle());
+
+        if (existTask.getDate()== null || existTask.getDate().isEmpty()) {
+            final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
+            setReminderButton.setImageResource(R.drawable.alarmclock_gray);
+        }
+
+        if(existTask.isPriority())
+        {
+            final ImageView PriorityButton = (ImageView) findViewById(R.id.priority_button);
+            PriorityButton.setImageResource(R.drawable.exclamation_mark);
+            isPriority = true;
+        }
+
+        if (existTask.getImageUri()!= null) {
+            final ImageView preview = (ImageView) findViewById(R.id.add_image_button);;
+            preview.setImageURI(existTask.getImageUri());
+            selectedPath = existTask.getImagePath();
+            selectedImageUri = existTask.getImageUri();
+        }
+        taskId = receivedDataBundle.getLong("id");
+    }
+
+    private void editTask(View view) {
+        TaskDAO dao = TaskDAO.getInstance(this);
+        //get text from the view
+        EditText editTextTitle = (EditText) findViewById(R.id.title);
+        String title = editTextTitle.getText().toString();
+
+        String date = "";
+        if (calendar != null)
+            date = getDateTime();
+
+        Long id = System.currentTimeMillis();
+
+        Task updatedTask = new Task(id, title, date,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam);
+        updatedTask.setId(taskId);
+
+        //update task to DB
+        dao.updateTask(updatedTask, taskPosition);
+        Toast.makeText(this, title + " updated", Toast.LENGTH_LONG).show();
+
+        //user set reminder
+        if(isReminder){
+            setReminder(id, title, date);
+        }
+
+        finish();
     }
 
     /**
@@ -141,6 +221,8 @@ public class CreateTaskActivity extends ActionBarActivity {
                     calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
                             timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
                     picker.dismiss();
+                    final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
+                    setReminderButton.setImageResource(R.drawable.alarm_clock);
                 }
             });
             picker.show();
@@ -223,9 +305,10 @@ public class CreateTaskActivity extends ActionBarActivity {
                 selectedImageUri = data.getData();
             }
 
-            if (requestCode == CAMERA_PICTURE) {
+            if (requestCode == CAMERA_PICTURE_REQUEST) {
                 if ( selectedImageUri == null && data.getExtras() != null &&  data.getExtras().get( "data" ) instanceof Bitmap ) {
                     selectedImageUri = createUriFromPhotoIntentForHtcDesireHD( this, data, selectedImageUri );
+                    isPicFromCam = true;
                     preview.setImageURI(selectedImageUri);
                 }
                 else {
@@ -235,16 +318,14 @@ public class CreateTaskActivity extends ActionBarActivity {
                 }
             }
 
-            else if (requestCode == GALLERY_PICTURE)
-            {
+            else if (requestCode == GALLERY_PICTURE_REQUEST)  {
                 selectedPath = getPath(selectedImageUri);
                 preview.setImageURI(selectedImageUri);
                 Log.d("selectedPath : " ,selectedPath);
             }
 
-            else if (requestCode == VR_REQUEST )
-            {
-                //store the returned word list as an ArrayList
+            else if (requestCode == VR_REQUEST ) {
+                 //store the returned word list as an ArrayList
                 ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (suggestedWords != null && !suggestedWords.isEmpty())
                 {
@@ -281,7 +362,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                 Intent pictureActionIntent = new Intent(
                         Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pictureActionIntent, GALLERY_PICTURE);
+                startActivityForResult(pictureActionIntent, GALLERY_PICTURE_REQUEST);
             }
         });
 
@@ -290,7 +371,7 @@ public class CreateTaskActivity extends ActionBarActivity {
             public void onClick(DialogInterface arg0, int arg1)
             {
                 Intent pictureActionIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(pictureActionIntent, CAMERA_PICTURE);
+                startActivityForResult(pictureActionIntent, CAMERA_PICTURE_REQUEST);
             }
         });
         myAlertDialog.show();
@@ -334,7 +415,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         Long id = System.currentTimeMillis();
 
         //add task to DB
-        dao.addTask( new Task(id, title, date,"tel aviv", selectedImageUri, isPriority));
+        dao.addTask( new Task(id, title, date,"tel aviv", selectedImageUri, isPriority, selectedPath, isPicFromCam));
 
         Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
 
