@@ -18,5 +18,6 @@
     <string name="no_tasks">No Tasks</string>
     <string name="action_add">Add Task</string>
 
+    <string name="enter_location">Enter Location</string>
 
 </resources>

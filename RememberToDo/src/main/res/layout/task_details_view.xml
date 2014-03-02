@@ -4,26 +4,88 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <LinearLayout
+        android:id="@+id/textLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
     <TextView android:id="@+id/title"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#0b0cff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autoText="false"/>
+        android:autoText="false"
+        android:text="dror"
+        android:layout_alignParentStart="true" />
 
-    <TextView android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"/>
+        <TextView android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dror"
+            android:layout_alignParentStart="true" />
+
+        <TextView android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dror"
+            android:layout_alignParentStart="true" />
+
+    </LinearLayout>
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/done_button"
         android:src="@drawable/trash_bin"
         android:adjustViewBounds="true"
         android:layout_alignParentRight="true" />
 
+    <LinearLayout
+        android:id="@+id/attachmentsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:orientation="horizontal"
+        android:layout_below="@+id/textLayout"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/exclamation_mark"
+            android:src="@drawable/exclamation_mark"
+            android:layout_marginRight="30dp"
+            android:adjustViewBounds="true" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/alarm_clock"
+            android:src="@drawable/alarm_clock"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="30dp"/>
+
+         <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/map"
+            android:src="@drawable/map"
+            android:layout_marginRight="30dp"
+            android:adjustViewBounds="true"/>
+        
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/camera"
+            android:src="@drawable/camera"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="30dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

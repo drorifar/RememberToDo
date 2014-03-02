@@ -10,21 +10,20 @@ import android.util.Log;
 public class TaskTable {
     // Task Table name
     public static final String TABLE_TASKS = "tasks";
+
     // Task Table Columns names
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_TITLE = "title";
-    public static final String COLUMN_DESCRIPTION = "description";
+    public static final String COLUMN_LOCATION = "location";
     public static final String COLUMN_DATE = "date";
+    public static final String COLUMN_IMAGE_URI = "imageUri";
+    public static final String COLUMN_PRIORITY = "isPriority";
 
-    // Database creation SQL statement
-    private static final String CREATE_TASKS_TABLE = "CREATE TABLE "
-            + TABLE_TASKS
-            + "("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_TITLE + " TEXT, "
-            + COLUMN_DESCRIPTION + " TEXT, "
-            + COLUMN_DATE + " DATETIME"
-            + ");";
+    private static final  String CREATE_TASKS_TABLE = " CREATE TABLE " + TABLE_TASKS + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_TITLE + " TEXT,"
+                + COLUMN_DATE + " TEXT,"  + COLUMN_LOCATION + " TEXT,"
+                + COLUMN_IMAGE_URI + " TEXT," + COLUMN_PRIORITY + " TEXT"
+                + ")";
 
 
     // Create Table

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/trash_bin" android:state_pressed="true"/>
+    <item android:drawable="@drawable/attachment"/>
+    <item android:drawable="@drawable/trash_bin" android:state_focused="true"/>
+</selector>

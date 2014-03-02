@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +64,24 @@ public class TaskDAO implements ITaskDAO  {
 
         ContentValues values = new ContentValues();
         values.put(TaskTable.COLUMN_TITLE, taskObj.getTitle());
-        values.put(TaskTable.COLUMN_DESCRIPTION, taskObj.getDescription());
+        if (taskObj.getImageUri()!=null)
+        {
+            String selectedPath = taskObj.getImageUri().getPath();
+            values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
+        }
         values.put(TaskTable.COLUMN_DATE, taskObj.getDate());
+        String isPriority = "false";
+        if (taskObj.isPriority())
+        {
+            isPriority = "true";
+        }
+        values.put(TaskTable.COLUMN_PRIORITY, isPriority);
 
         //insert into DB
         long id = database.insert(TaskTable.TABLE_TASKS, null, values);
 
         database.close();
-        System.out.println("----------  " + taskObj.getId() + " \" " + taskObj.getTitle() + " \"" + " ADDED   ----------");
+        System.out.println("----------  " + taskObj.getId() + " \" "+ isPriority + taskObj.getTitle() + " \""  + " \""+ " ADDED   ----------");
     }
 
     /**
@@ -109,8 +121,15 @@ public class TaskDAO implements ITaskDAO  {
                 Task taskDetails = new Task();
                 taskDetails.setId(Long.parseLong(cursor.getString(0)));
                 taskDetails.setTitle(cursor.getString(1));
-                taskDetails.setDescription(cursor.getString(2));
-                taskDetails.setDate(cursor.getString(3));
+                taskDetails.setDate(cursor.getString(2));
+                taskDetails.setLocation(cursor.getString(3));
+                String imgPath = (cursor.getString(4));
+                if (imgPath != null && !imgPath.isEmpty())
+                        taskDetails.setImageUri(Uri.fromFile(new File(imgPath)));
+                String isPriority = (cursor.getString(5));
+                if (isPriority != null && !isPriority.isEmpty())
+                    taskDetails.setPriorityFromString(isPriority);
+                else taskDetails.setPriority(false);
 
                 // Adding contact to list
                 taskList.add(taskDetails);

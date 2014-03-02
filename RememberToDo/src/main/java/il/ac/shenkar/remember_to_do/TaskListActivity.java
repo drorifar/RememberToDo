@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class TaskListActivity extends ActionBarActivity {
 
@@ -23,7 +25,6 @@ public class TaskListActivity extends ActionBarActivity {
     TaskListBaseAdapter adapter = null;
 
     public TaskListActivity() {}
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class TaskListActivity extends ActionBarActivity {
 
         context = this;
 
-        TaskDAO dao = TaskDAO.getInstance(this);
+        final TaskDAO dao = TaskDAO.getInstance(this);
 
         ListView listView = (ListView) findViewById(R.id.listV_main);
         listView.setEmptyView(findViewById(R.id.emptyView));
@@ -42,13 +43,48 @@ public class TaskListActivity extends ActionBarActivity {
 
 
         final ImageView addNewTaskButton = (ImageView) findViewById(R.id.add_task_button);
-
         addNewTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addTask(view);
             }
         });
+
+        SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener
+                (listView, new SwipeDismissListViewTouchListener.OnDismissCallback() {
+                    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions)
+                        {
+                            Toast.makeText(getBaseContext(), "delete", Toast.LENGTH_SHORT).show();
+                            dao.deleteTask(dao.getItem(position));
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+        listView.setOnTouchListener(touchListener);
+        listView.setOnScrollListener(touchListener.makeScrollListener());
+
+        // short click on one row
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parentAdapter, View view, int position, long id) {
+               // selectedItemPosition = position;
+                editTask(position);
+            }
+        });
+
+    // long click on one row
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            // Called when the user long-clicks on someView
+            public boolean onItemLongClick(AdapterView<?> p, View view, int pos, long id) {
+       Toast.makeText(getBaseContext(), "long", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+    }
+
+    public void editTask (int position){
+        //create the bundle in order to pass the wanted information to the edit activity
+        Toast.makeText(getBaseContext(), "short", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -80,6 +116,4 @@ public class TaskListActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 }
