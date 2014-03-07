@@ -1,6 +1,7 @@
 package il.ac.shenkar.remember_to_do;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +58,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
         holder.txt_itemName.setText(getItem(position).getTitle());
 
         String date = getItem(position).getDate();
-        String loaction = getItem(position).getLocation();
+        String location = getItem(position).getLocation();
         Uri imageUri = getItem(position).getImageUri();
 
         if (imageUri == null)
@@ -82,7 +83,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
             holder.txt_time.setText(date);
         }
 
-        if (loaction == null || loaction.isEmpty())
+        if (location == null || location.isEmpty())
         {
             holder.txt_location.setVisibility(View.INVISIBLE);
             holder.img_map.setVisibility(View.INVISIBLE);
@@ -91,7 +92,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
         {
             holder.txt_location.setVisibility(View.VISIBLE);
             holder.img_map.setVisibility(View.VISIBLE);
-            holder.txt_location.setText(loaction);
+            holder.txt_location.setText(location);
         }
 
         if (!getItem(position).isPriority()) {

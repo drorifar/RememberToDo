@@ -73,7 +73,7 @@ public class TaskDAO implements ITaskDAO  {
                 values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
             }
         }
-
+        values.put(TaskTable.COLUMN_LOCATION, taskObj.getLocation());
         values.put(TaskTable.COLUMN_DATE, taskObj.getDate());
         String isPriority = "false";
         if (taskObj.isPriority())
@@ -181,6 +181,7 @@ public class TaskDAO implements ITaskDAO  {
                 values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
             }
         }
+        values.put(TaskTable.COLUMN_LOCATION, updatedTask.getLocation());
         values.put(TaskTable.COLUMN_DATE, updatedTask.getDate());
         String isPriority = "false";
         if (updatedTask.isPriority())

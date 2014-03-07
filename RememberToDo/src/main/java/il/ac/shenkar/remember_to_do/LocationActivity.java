@@ -5,6 +5,7 @@ import android.content.IntentSender;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,8 +83,8 @@ public class LocationActivity extends FragmentActivity implements
             }
         });
 
-        Button showOnMap = (Button) findViewById(R.id.set_location);
-        showOnMap.setOnClickListener(new Button.OnClickListener(){
+        Button setLocation = (Button) findViewById(R.id.set_location);
+        setLocation.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -94,6 +96,56 @@ public class LocationActivity extends FragmentActivity implements
             }
         }
         );
+
+        ImageView findMe = (ImageView) findViewById(R.id.myLocation);
+        findMe.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Location location = mLocationClient.getLastLocation();
+                if (location==null){
+                    Toast.makeText(getBaseContext(), "No last known location", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                MyLocationAsyncTaskRunner runner = new MyLocationAsyncTaskRunner();
+                runner.execute(location);
+            }
+        }
+        );
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Connect the client.
+        mLocationClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        // Disconnecting the client invalidates it.
+        mLocationClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        // Display the connection status
+        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDisconnected() {
+        Toast.makeText(this, "Disconnected. Connection lost.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        try {
+            // Start an Activity that tries to resolve the error
+            connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -101,22 +153,8 @@ public class LocationActivity extends FragmentActivity implements
      */
     private void lookUp(String addressString) {
         String out;
-        try {
-            List<Address> addresses = mGeoCoder.getFromLocationName(addressString, 1);
-            if (addresses.size() >= 1) {
-                Address address = addresses.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                out = address.getAddressLine(0) + " ("
-                        + DF.format(address.getLatitude()) + " , "
-                        + DF.format(address.getLongitude()) + ")";
-                updateMap(latLng);
-            } else {
-                out = "Not found";
-            }
-        } catch (IOException e) {
-            out = "Not available";
-        }
-        mLocationOut.setText(out);
+        LookUpAsyncTaskRunner runner = new LookUpAsyncTaskRunner();
+        runner.execute(addressString);
     }
 
     /**
@@ -143,59 +181,6 @@ public class LocationActivity extends FragmentActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // Connect the client.
-        mLocationClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        // Disconnecting the client invalidates it.
-        mLocationClient.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        // Display the connection status
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
-        Location location = mLocationClient.getLastLocation();
-        if (location==null){
-            Toast.makeText(this, "No last known location", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        try {
-            List<Address> addresses =
-                    mGeoCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            if (addresses.size()>0){
-                mLocationIn.setText(addresses.get(0).getAddressLine(0));
-                lookUp(mLocationIn.getText().toString());
-            } else {
-                mLocationIn.setText("No geocoder results");
-            }
-        } catch (IOException e) {
-            Toast.makeText(this, "No geocoder", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    @Override
-    public void onDisconnected() {
-        Toast.makeText(this, "Disconnected. Connection lost.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        try {
-            // Start an Activity that tries to resolve the error
-            connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-        } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             case CONNECTION_FAILURE_RESOLUTION_REQUEST:
@@ -209,4 +194,74 @@ public class LocationActivity extends FragmentActivity implements
                 break;
         }
     }
+
+    //private class for async search my location
+    private class MyLocationAsyncTaskRunner extends AsyncTask<Location, Void, String> {
+
+        private String resp;
+
+        @Override
+        protected String doInBackground(Location... params) {
+            try {
+                Location location = params[0];
+                           List<Address> addresses = mGeoCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                if (addresses.size()>0){
+                   resp = addresses.get(0).getAddressLine(0);
+                }
+                else resp = "No geocoder results";
+            } catch (IOException e) {
+                e.printStackTrace();
+                resp = "No geocoder";
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp = "No geocoder";
+            }
+            return resp;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mLocationIn.setText(result);
+            if (!result.contains("No geocoder") && mLocationIn.getText() != null){
+                lookUp(mLocationIn.getText().toString());
+            }
+        }
+    }
+
+    //private class for lookup the location in the map
+    private class LookUpAsyncTaskRunner extends AsyncTask<String, Void, List<Address>> {
+        @Override
+        protected List<Address> doInBackground(String... params) {
+            try {
+                String addressString = params[0];
+                return mGeoCoder.getFromLocationName(addressString, 1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute( List<Address> addresses) {
+            String out;
+            try
+            {
+                if (addresses != null && addresses.size() >= 1) {
+                    Address address = addresses.get(0);
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    out = address.getAddressLine(0) + " ("
+                            + DF.format(address.getLatitude()) + " , "
+                            + DF.format(address.getLongitude()) + ")";
+                    updateMap(latLng);
+                } else {
+                    out = "Not found";
+                }
+            } catch (Exception e) {
+                out = "Not available";
+            }
+            mLocationOut.setText(out);
+        }
+    }
 }
+

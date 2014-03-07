@@ -160,7 +160,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         }
 
         if (existTask.getImageUri()!= null) {
-            final ImageView preview = (ImageView) findViewById(R.id.add_image_button);;
+            final ImageView preview = (ImageView) findViewById(R.id.add_image_button);
             preview.setImageURI(existTask.getImageUri());
             selectedPath = existTask.getImagePath();
             selectedImageUri = existTask.getImageUri();
@@ -172,8 +172,9 @@ public class CreateTaskActivity extends ActionBarActivity {
         TaskDAO dao = TaskDAO.getInstance(this);
         //get text from the view
         EditText editTextTitle = (EditText) findViewById(R.id.title);
-        String title = editTextTitle.getText().toString();
-
+        String title = "";
+        if (editTextTitle.getText() != null)
+            title = editTextTitle.getText().toString();
 
         Long id = System.currentTimeMillis();
 
