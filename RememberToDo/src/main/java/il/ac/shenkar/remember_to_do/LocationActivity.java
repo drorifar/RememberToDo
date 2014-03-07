@@ -1,5 +1,6 @@
 package il.ac.shenkar.remember_to_do;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
@@ -7,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -107,6 +109,7 @@ public class LocationActivity extends FragmentActivity implements
 
         final Button clearLocation = (Button)findViewById(R.id.clear);
         clearLocation.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
             @Override
             public void onClick(View v) {
                 mLocationIn.setText("");
