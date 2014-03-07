@@ -6,20 +6,44 @@
     android:orientation="vertical"
     android:layout_margin="15dp">
 
-    <EditText
-        android:id="@+id/location_input"
-        android:singleLine="true"
-        android:imeActionLabel="@string/abc_action_mode_done"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/location_input"
+            android:singleLine="true"
+            android:imeActionLabel="@string/abc_action_mode_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_location"
+            />
+
+        <ImageView
+            android:id="@+id/myLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/my_location"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/enter_location"
-        />
+        android:weightSum="1">
+
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/set_location"
-        android:layout_width="131dp"
+        android:layout_width="103dp"
         android:layout_height="wrap_content"
         android:text="Set"
-        android:layout_gravity="right" />
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:padding="15dp"
