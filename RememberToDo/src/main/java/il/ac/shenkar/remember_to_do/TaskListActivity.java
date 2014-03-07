@@ -1,20 +1,13 @@
 package il.ac.shenkar.remember_to_do;
 
-import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.support.v4.view.MenuItemCompat;
 import android.view.ActionMode;
-import android.view.ViewGroup;
-import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -22,6 +15,9 @@ import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
+/**
+ * the main_list_view activity - the tasks list view
+ */
 public class TaskListActivity extends ActionBarActivity {
 
     private Context context;
@@ -37,7 +33,7 @@ public class TaskListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.main_list_view);
 
         context = this;
 

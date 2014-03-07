@@ -2,6 +2,9 @@ package il.ac.shenkar.remember_to_do;
 
 import android.net.Uri;
 
+/**
+ * the task DM
+ */
 public class Task {
     private Long id;
     private String title;
@@ -14,6 +17,17 @@ public class Task {
 
     public Task(){}
 
+    /**
+     * Constructor
+     * @param id - task id
+     * @param title - task title
+     * @param date - task date
+     * @param location - task location
+     * @param imageUri - task attach Image Uri
+     * @param isPriority - boolean if its high priority
+     * @param imgPath - the img path
+     * @param isPicFromCam - if the pic that taken is from the camera or gallery
+     */
     public Task(Long id, String title, String date, String location, Uri imageUri, boolean isPriority, String imgPath, boolean isPicFromCam){
         setId(id);
         setTitle(title);
@@ -25,6 +39,7 @@ public class Task {
         setPicFromCam(isPicFromCam);
     }
 
+    //setters and getters
 
     public void setTitle(String title){
         this.title = title;

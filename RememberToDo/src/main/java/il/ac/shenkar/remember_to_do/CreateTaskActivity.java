@@ -1,12 +1,12 @@
 package il.ac.shenkar.remember_to_do;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.speech.RecognizerIntent;
@@ -23,16 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -47,6 +40,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
     public final static String EXTRA_LIST = "il.ac.shenkar.totodo.LIST";
 
+    //onActivityResult Consts
     private static final int CAMERA_PICTURE_REQUEST = 1;
     private static final int GALLERY_PICTURE_REQUEST = 2;
     private static final int VR_REQUEST = 3;
@@ -63,6 +57,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     Calendar calendar;
     String stringTimeReminder = "";
 
+    //location verb
     String location ="";
 
     //boolean flag for set reminder
@@ -76,20 +71,22 @@ public class CreateTaskActivity extends ActionBarActivity {
     //is priority flag
     boolean isPriority = false;
 
-    //URL string
-    String urlString = "http://mobile1-tasks-dispatcher.herokuapp.com/task/random";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_task_view);
 
+        //lock the screen in portrait orientation
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         Intent receiveDataIntent = getIntent();
         Bundle receivedDataBundle = receiveDataIntent.getExtras();
+
+        //checks if its a new task or existing task
         if (receivedDataBundle != null)  {
             isEdit = true;
-
         }
+
         //set reminder button listener
         final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
         setReminderButton.setOnClickListener(setReminderButtonListener);
@@ -110,87 +107,11 @@ public class CreateTaskActivity extends ActionBarActivity {
         final ImageView setPriorityButton = (ImageView) findViewById(R.id.priority_button);
         setPriorityButton.setOnClickListener(setPriorityButtonListener);
 
-        if (isEdit)
-        {
+        //if it is an existing task set its details
+        if (isEdit){
             setExistTaskDetail(receivedDataBundle);
         }
 
-    }
-
-    private void setExistTaskDetail(Bundle receivedDataBundle) {
-
-        final TaskDAO dao = TaskDAO.getInstance(this);
-        taskPosition = receivedDataBundle.getInt("position");
-        Task existTask = dao.getItem(taskPosition);
-
-        final EditText titleText = (EditText) findViewById(R.id.title);
-        titleText.setText(existTask.getTitle());
-
-        if (existTask.getDate()== null || existTask.getDate().isEmpty()) {
-            final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-            setReminderButton.setImageResource(R.drawable.alarmclock_gray);
-        }
-        else
-        {
-            final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-            setReminderButton.setImageResource(R.drawable.alarm_clock);
-            final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
-            setReminderTxt.setText(existTask.getDate());
-            stringTimeReminder = existTask.getDate();
-        }
-
-        if (existTask.getLocation()== null || existTask.getLocation().isEmpty()) {
-            final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setLocationButton.setImageResource(R.drawable.map_gray);
-        }
-        else
-        {
-            location = existTask.getLocation();
-            final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setLocationButton.setImageResource(R.drawable.map);
-            final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
-            setLocationTxt.setText(location);
-        }
-
-        if(existTask.isPriority())
-        {
-            final ImageView PriorityButton = (ImageView) findViewById(R.id.priority_button);
-            PriorityButton.setImageResource(R.drawable.exclamation_mark);
-            isPriority = true;
-        }
-
-        if (existTask.getImageUri()!= null) {
-            final ImageView preview = (ImageView) findViewById(R.id.add_image_button);
-            preview.setImageURI(existTask.getImageUri());
-            selectedPath = existTask.getImagePath();
-            selectedImageUri = existTask.getImageUri();
-        }
-        taskId = receivedDataBundle.getLong("id");
-    }
-
-    private void editTask(View view) {
-        TaskDAO dao = TaskDAO.getInstance(this);
-        //get text from the view
-        EditText editTextTitle = (EditText) findViewById(R.id.title);
-        String title = "";
-        if (editTextTitle.getText() != null)
-            title = editTextTitle.getText().toString();
-
-        Long id = System.currentTimeMillis();
-
-        Task updatedTask = new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam);
-        updatedTask.setId(taskId);
-
-        //update task to DB
-        dao.updateTask(updatedTask, taskPosition);
-        Toast.makeText(this, title + " updated", Toast.LENGTH_LONG).show();
-
-        //user set reminder
-        if(isReminder){
-            setReminder(id, title, stringTimeReminder);
-        }
-
-        finish();
     }
 
     /**
@@ -228,7 +149,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                     calendar = Calendar.getInstance();
                     calendar.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(),
                             timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
-                    stringTimeReminder = getDateTime(calendar);
+                    stringTimeReminder = Utilities.getDateTime(calendar);
                     picker.dismiss();
                     final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
                     setReminderButton.setImageResource(R.drawable.alarm_clock);
@@ -293,31 +214,125 @@ public class CreateTaskActivity extends ActionBarActivity {
             {
                 priorityButton.setImageResource(R.drawable.exclamation_mark);
             }
-            else priorityButton.setImageResource(R.drawable.exclamation_mark_gray);
+            else priorityButton.setImageResource(R.drawable.exclamation_gray);
         }
     };
 
-    protected static Uri createUriFromPhotoIntentForHtcDesireHD( Activity activity, Intent intent, Uri uri ) {
-        FileOutputStream fos = null;
-        try {
-            Bitmap bitmap = (Bitmap) intent.getExtras().get( "data" );
-            File outputDir = activity.getCacheDir();
-            File outputFile = File.createTempFile( "Photo-", ".jpg", outputDir );
-            fos = new FileOutputStream( outputFile );
-            bitmap.compress( Bitmap.CompressFormat.JPEG, 90, fos );
-            uri = Uri.fromFile( outputFile );
-        } catch ( IOException e ) {
-        } finally {
-            try {
-                if ( fos != null ) {
-                    fos.close();
-                }
-            } catch ( IOException e ) {
-            }
+    /**
+     * set existing task  details
+     * @param receivedDataBundle - the bundle send from the last activity - include the task position
+     */
+    private void setExistTaskDetail(Bundle receivedDataBundle) {
+
+        final TaskDAO dao = TaskDAO.getInstance(this);
+        taskPosition = receivedDataBundle.getInt("position");
+        //get the existing task by its position
+        Task existTask = dao.getItem(taskPosition);
+
+        final EditText titleText = (EditText) findViewById(R.id.title);
+        titleText.setText(existTask.getTitle());
+
+        if (existTask.getDate()== null || existTask.getDate().isEmpty()) {
+            final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
+            setReminderButton.setImageResource(R.drawable.alarmclock_gray);
         }
-        return uri;
+        else {
+            final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
+            setReminderButton.setImageResource(R.drawable.alarm_clock);
+            final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
+            setReminderTxt.setText(existTask.getDate());
+            stringTimeReminder = existTask.getDate();
+        }
+
+        if (existTask.getLocation()== null || existTask.getLocation().isEmpty()) {
+            final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
+            setLocationButton.setImageResource(R.drawable.map_gray);
+        }
+        else {
+            location = existTask.getLocation();
+            final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
+            setLocationButton.setImageResource(R.drawable.map);
+            final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
+            setLocationTxt.setText(location);
+        }
+
+        if(existTask.isPriority()) {
+            final ImageView PriorityButton = (ImageView) findViewById(R.id.priority_button);
+            PriorityButton.setImageResource(R.drawable.exclamation_mark);
+            isPriority = true;
+        }
+
+        if (existTask.getImageUri()!= null) {
+            final ImageView preview = (ImageView) findViewById(R.id.add_image_button);
+            preview.setImageURI(existTask.getImageUri());
+            selectedPath = existTask.getImagePath();
+            selectedImageUri = existTask.getImageUri();
+        }
+
+        taskId = receivedDataBundle.getLong("id");
     }
 
+    /**
+     * Handling new task creation
+     * @param view
+     */
+    public void createTask(View view) {
+        TaskDAO dao = TaskDAO.getInstance(this);
+
+        //get text from the view
+        EditText editTextTitle = (EditText) findViewById(R.id.title);
+        String title = editTextTitle.getText().toString();
+
+
+        Long id = System.currentTimeMillis();
+
+        //add task to DB
+        dao.addTask( new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam));
+
+        Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
+
+        //user set reminder
+        if(isReminder){
+            setReminder(id, title, stringTimeReminder);
+        }
+        finish();
+    }
+
+    /**
+     * update existing task - when push "update" on the action bar
+     */
+    private void updateTask() {
+        TaskDAO dao = TaskDAO.getInstance(this);
+
+        //get title from the view
+        EditText editTextTitle = (EditText) findViewById(R.id.title);
+        String title = "";
+        if (editTextTitle.getText() != null)
+            title = editTextTitle.getText().toString();
+
+        Long id = System.currentTimeMillis();
+
+        Task updatedTask = new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam);
+        updatedTask.setId(taskId);
+
+        //update task in DB
+        dao.updateTask(updatedTask, taskPosition);
+        Toast.makeText(this, title + " updated", Toast.LENGTH_LONG).show();
+
+        //user set reminder
+        if(isReminder){
+            setReminder(id, title, stringTimeReminder);
+        }
+        finish();
+    }
+
+
+    /**
+     * onActivityResult function
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -330,7 +345,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
             if (requestCode == CAMERA_PICTURE_REQUEST) {
                 if ( selectedImageUri == null && data.getExtras() != null &&  data.getExtras().get( "data" ) instanceof Bitmap ) {
-                    selectedImageUri = createUriFromPhotoIntentForHtcDesireHD( this, data, selectedImageUri );
+                    selectedImageUri = Utilities.createUriFromPhotoIntentForHtcDesireHD( this, data, selectedImageUri );
                     isPicFromCam = true;
                     preview.setImageURI(selectedImageUri);
                 }
@@ -359,7 +374,8 @@ public class CreateTaskActivity extends ActionBarActivity {
             else if (requestCode == LOCATION_ACTIVITY_REQUEST ) {
                 //store the returned word list as an ArrayList
                 Bundle bundle = data.getExtras();
-                location = bundle.getString("location");
+                if (bundle != null && bundle.containsKey("location"))
+                       location = bundle.getString("location");
                 final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
                 setLocationButton.setImageResource(R.drawable.map);
                 final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
@@ -368,7 +384,6 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         }
     }
-
 
     public String getPath(Uri contentUri) {
         String res = null;
@@ -382,6 +397,9 @@ public class CreateTaskActivity extends ActionBarActivity {
         return res;
     }
 
+    /**
+     * opent the image picker dialog
+     */
     public void Image_Picker_Dialog()
     {
         AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
@@ -398,11 +416,8 @@ public class CreateTaskActivity extends ActionBarActivity {
                 startActivityForResult(pictureActionIntent, GALLERY_PICTURE_REQUEST);
             }
         });
-
-        myAlertDialog.setNegativeButton("Camera", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface arg0, int arg1)
-            {
+        myAlertDialog.setNegativeButton("Camera", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
                 Intent pictureActionIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(pictureActionIntent, CAMERA_PICTURE_REQUEST);
             }
@@ -430,34 +445,9 @@ public class CreateTaskActivity extends ActionBarActivity {
         startActivityForResult(listenIntent, VR_REQUEST);
     }
 
-    /**
-     * Handling new task creation
-     * @param view
-     */
-    public void createTask(View view) {
-        TaskDAO dao = TaskDAO.getInstance(this);
-
-        //get text from the view
-        EditText editTextTitle = (EditText) findViewById(R.id.title);
-        String title = editTextTitle.getText().toString();
-
-
-        Long id = System.currentTimeMillis();
-
-        //add task to DB
-        dao.addTask( new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam));
-
-        Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
-
-        //user set reminder
-        if(isReminder){
-           setReminder(id, title, stringTimeReminder);
-        }
-        finish();
-    }
 
     /**
-     * Set Reminder
+     * Set he Time Reminder
      * @param id
      * @param title
      * @param date
@@ -480,17 +470,12 @@ public class CreateTaskActivity extends ActionBarActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeToWait, pendingIntent);
     }
 
-    /**
-     * Gets the current time and converts it to String using DateFormat
-     * @return String that represent current time
-     */
-    public String getDateTime(Calendar cal) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "EEE, dd/MM/yyyy, kk:mm:ss", Locale.getDefault());
-        Date d = cal.getTime();
-        return dateFormat.format(d);
-    }
 
+    /**
+     * the option menu onCreate method
+     * @param menu 
+     * @return
+    */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
@@ -501,6 +486,11 @@ public class CreateTaskActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * the option menu onOptionsItemSelected method
+     * @param item- the menu item that was selected
+     * @return - true if correct
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -509,11 +499,10 @@ public class CreateTaskActivity extends ActionBarActivity {
                 createTask(getCurrentFocus());
                 return true;
             case R.id.action_editTask:
-                editTask(getCurrentFocus());
+                updateTask();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

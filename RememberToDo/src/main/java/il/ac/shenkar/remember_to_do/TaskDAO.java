@@ -42,8 +42,7 @@ public class TaskDAO implements ITaskDAO  {
      * @return instance
      */
     public synchronized static TaskDAO getInstance(Context context){
-        if(instance == null)
-        {
+        if(instance == null) {
             instance = new TaskDAO(context);
         }
         return  instance;

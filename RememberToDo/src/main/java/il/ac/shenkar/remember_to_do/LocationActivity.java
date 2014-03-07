@@ -2,6 +2,7 @@ package il.ac.shenkar.remember_to_do;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ActivityInfo;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -52,6 +53,9 @@ public class LocationActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location_picker);
+
+        //lock the screen in portrait orientation
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //bind to layout
         mLocationIn = (EditText) findViewById(R.id.location_input);
@@ -195,7 +199,9 @@ public class LocationActivity extends FragmentActivity implements
         }
     }
 
-    //private class for async search my location
+    /**
+     * private class for async search my location
+     */
     private class MyLocationAsyncTaskRunner extends AsyncTask<Location, Void, String> {
 
         private String resp;
@@ -228,7 +234,9 @@ public class LocationActivity extends FragmentActivity implements
         }
     }
 
-    //private class for lookup the location in the map
+    /**
+     * private class for lookup the location in the map
+     */
     private class LookUpAsyncTaskRunner extends AsyncTask<String, Void, List<Address>> {
         @Override
         protected List<Address> doInBackground(String... params) {

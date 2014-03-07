@@ -28,7 +28,6 @@ public class TasksDatabaseHelper extends SQLiteOpenHelper {
     //Upgrading Table
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         TaskTable.onUpgrade(database, oldVersion, newVersion);
-
     }
 
 }

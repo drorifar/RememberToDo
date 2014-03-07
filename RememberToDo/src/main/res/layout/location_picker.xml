@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -29,20 +30,11 @@
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
-
-
-    </LinearLayout>
-
     <Button
         android:id="@+id/set_location"
         android:layout_width="103dp"
         android:layout_height="wrap_content"
-        android:text="Set"
+        android:text="@string/set"
         android:layout_gravity="center_horizontal" />
 
     <TextView
@@ -50,7 +42,7 @@
         android:id="@+id/location_output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Waiting for location..."
+        android:text="@string/waiting_for_loc"
         />
 
     <fragment
