@@ -30,12 +30,27 @@
             android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/set_location"
-        android:layout_width="103dp"
-        android:layout_height="wrap_content"
-        android:text="@string/set"
-        android:layout_gravity="center_horizontal" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/set_location"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set"
+            android:layout_gravity="left"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/clear"
+            android:layout_gravity="center_horizontal|right"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <TextView
         android:padding="15dp"

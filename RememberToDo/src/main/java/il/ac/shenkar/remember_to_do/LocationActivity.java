@@ -57,6 +57,10 @@ public class LocationActivity extends FragmentActivity implements
         //lock the screen in portrait orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //gets details from createTaskActivity
+        Intent receiveDataIntent = getIntent();
+        Bundle receivedDataBundle = receiveDataIntent.getExtras();
+
         //bind to layout
         mLocationIn = (EditText) findViewById(R.id.location_input);
         mLocationOut = (TextView) findViewById(R.id.location_output);
@@ -87,7 +91,7 @@ public class LocationActivity extends FragmentActivity implements
             }
         });
 
-        Button setLocation = (Button) findViewById(R.id.set_location);
+        final Button setLocation = (Button) findViewById(R.id.set_location);
         setLocation.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -101,7 +105,16 @@ public class LocationActivity extends FragmentActivity implements
         }
         );
 
-        ImageView findMe = (ImageView) findViewById(R.id.myLocation);
+        final Button clearLocation = (Button)findViewById(R.id.clear);
+        clearLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLocationIn.setText("");
+                setLocation.callOnClick();
+            }
+        });
+
+        final ImageView findMe = (ImageView) findViewById(R.id.myLocation);
         findMe.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -115,6 +128,14 @@ public class LocationActivity extends FragmentActivity implements
             }
         }
         );
+
+        //checks if its a new task or existing task
+        if (receivedDataBundle != null)  {
+            if (receivedDataBundle.getString("location") != null && !receivedDataBundle.getString("location").isEmpty()) {
+                mLocationIn.setText(receivedDataBundle.getString("location"));
+                lookUp(mLocationIn.getText().toString());
+            }
+        }
     }
 
     @Override

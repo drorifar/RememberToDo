@@ -121,7 +121,12 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View v) {
-            startActivityForResult(new Intent(CreateTaskActivity.this, LocationActivity.class), LOCATION_ACTIVITY_REQUEST);
+            Bundle taskDetailsBundle = new Bundle();
+            taskDetailsBundle.putString("location",location);
+            Intent passDataIntent=(new Intent(CreateTaskActivity.this, LocationActivity.class));
+            passDataIntent.putExtras(taskDetailsBundle);
+            //start edit selected list item activity
+            startActivityForResult(passDataIntent, LOCATION_ACTIVITY_REQUEST);
         }
     };
 
@@ -377,9 +382,15 @@ public class CreateTaskActivity extends ActionBarActivity {
                 if (bundle != null && bundle.containsKey("location"))
                        location = bundle.getString("location");
                 final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
-                setLocationButton.setImageResource(R.drawable.map);
                 final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
-                setLocationTxt.setText(location);
+                if (location != null && !location.isEmpty()){
+                    setLocationButton.setImageResource(R.drawable.map);
+                    setLocationTxt.setText(location);
+                }
+                else {
+                    setLocationButton.setImageResource(R.drawable.map_gray);
+                    setLocationTxt.setText("");
+                }
             }
 
         }

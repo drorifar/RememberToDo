@@ -99,7 +99,7 @@ public class TaskListActivity extends ActionBarActivity {
         passDataIntent.putExtras(taskDetailsBundle);
         //start edit selected list item activity
         startActivity(passDataIntent);
-        }
+    }
 
     @Override
     public void onResume(){
