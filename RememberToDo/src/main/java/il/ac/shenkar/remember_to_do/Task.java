@@ -3,7 +3,7 @@ package il.ac.shenkar.remember_to_do;
 import android.net.Uri;
 
 /**
- * Created by Owner on 06/01/14.
+ * dror ata gey
  */
 public class Task {
     private Long id;
