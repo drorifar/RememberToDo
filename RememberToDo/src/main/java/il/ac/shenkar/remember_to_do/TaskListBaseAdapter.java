@@ -41,7 +41,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
             holder.img_map = (ImageView) convertView.findViewById(R.id.map);
             holder.bt_done = (ImageView) convertView.findViewById(R.id.done_button);
 
-            holder.bt_done.setOnClickListener(doneButtonOnClickListener);
+           // holder.bt_done.setOnClickListener(doneButtonOnClickListener);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -142,6 +143,4 @@ public class TaskListBaseAdapter extends BaseAdapter {
         ImageView img_cam;
         ImageView bt_done;
     }
-
-
 }
