@@ -1,11 +1,13 @@
 package il.ac.shenkar.remember_to_do;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import java.util.ArrayList;
 
@@ -13,6 +15,7 @@ import java.util.ArrayList;
  * This class manage notification sending
  */
 public class ReminderBroadcastReceiver extends BroadcastReceiver {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onReceive(Context context, Intent intent) {
 
