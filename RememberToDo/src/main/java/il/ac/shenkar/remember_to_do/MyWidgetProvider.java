@@ -43,7 +43,7 @@ public class MyWidgetProvider extends AppWidgetProvider {
                 int index = taskPos+1;
                 taskNum = "Task " + index + "\\" + dao.getCount();
             }
-            else title =   "No Task";
+            else title =   "No Tasks";
 
             remoteViews.setTextViewText(R.id.title, title);
             if (time.isEmpty())
