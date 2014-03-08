@@ -217,7 +217,7 @@ public class LocationActivity extends FragmentActivity implements
                         mLocationClient.connect();
                         break;
                     default:
-                        Toast.makeText(this, "OOps", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "There is problem connecting to geoLocation", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
