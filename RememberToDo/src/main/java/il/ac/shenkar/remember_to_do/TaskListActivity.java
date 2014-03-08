@@ -37,7 +37,7 @@ public class TaskListActivity extends ActionBarActivity {
 
         context = this;
 
-        dao = TaskDAO.getInstance(this);
+        dao = TaskDAO.getInstance(this, false);
 
         ListView listView = (ListView) findViewById(R.id.listV_main);
         listView.setEmptyView(findViewById(R.id.emptyView));
@@ -133,7 +133,6 @@ public class TaskListActivity extends ActionBarActivity {
         // Called when the user selects a contextual menu item
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            TaskDAO dao = TaskDAO.getInstance(context);
             switch (item.getItemId()) {
                 case R.id.action_share:
                     //Getting the action provider associated with the menu item whose id is share
@@ -190,6 +189,14 @@ public class TaskListActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_addTask:
                 addTask(getCurrentFocus());
+                return true;
+            case R.id.action_priority:
+                dao.getAllTasks(true);
+                adapter.notifyDataSetChanged();
+                return true;
+            case R.id.action_show_all:
+                dao.getAllTasks(false);
+                adapter.notifyDataSetChanged();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

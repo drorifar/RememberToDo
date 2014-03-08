@@ -220,7 +220,7 @@ public class CreateTaskActivity extends ActionBarActivity {
      */
     private void setExistTaskDetail(Bundle receivedDataBundle) {
 
-        final TaskDAO dao = TaskDAO.getInstance(this);
+        final TaskDAO dao = TaskDAO.getInstance(this, false);
         taskPosition = receivedDataBundle.getInt("position");
         //get the existing task by its position
         Task existTask = dao.getItem(taskPosition);
@@ -272,7 +272,7 @@ public class CreateTaskActivity extends ActionBarActivity {
      * @param view
      */
     public void createTask(View view) {
-        TaskDAO dao = TaskDAO.getInstance(this);
+        TaskDAO dao = TaskDAO.getInstance(this, false);
 
         //get text from the view
         EditText editTextTitle = (EditText) findViewById(R.id.title);
@@ -296,7 +296,7 @@ public class CreateTaskActivity extends ActionBarActivity {
      * update existing task - when push "update" on the action bar
      */
     private void updateTask() {
-        TaskDAO dao = TaskDAO.getInstance(this);
+        TaskDAO dao = TaskDAO.getInstance(this, false);
 
         //get title from the view
         EditText editTextTitle = (EditText) findViewById(R.id.title);

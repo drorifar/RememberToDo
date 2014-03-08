@@ -27,23 +27,24 @@ public class TaskDAO implements ITaskDAO  {
     private TasksDatabaseHelper dbHelper;
 
     //Singleton C'tor
-    private TaskDAO(Context context){
+    private TaskDAO(Context context, boolean isImportant){
         this.context = context;
 
         dbHelper = new TasksDatabaseHelper(context);
 
-        taskList = new ArrayList<Task>();
-        taskList = getAllTasks();
+        //taskList = new ArrayList<Task>();
+        taskList = getAllTasks(isImportant);
     }
 
     /**
      * Singleton getInstance()
      * @param context
+     * @param isImportant - if true get only the important tasks
      * @return instance
      */
-    public synchronized static TaskDAO getInstance(Context context){
+    public synchronized static TaskDAO getInstance(Context context,  boolean isImportant){
         if(instance == null) {
-            instance = new TaskDAO(context);
+            instance = new TaskDAO(context, isImportant);
         }
         return  instance;
     }
@@ -102,9 +103,16 @@ public class TaskDAO implements ITaskDAO  {
      *  @return ArrayList<TaskDetails> of all tasks
      */
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public ArrayList<Task> getAllTasks( boolean isImportant) {
+        taskList = new ArrayList<Task>();
+        String selectQuery;
+        if (!isImportant){
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TaskTable.TABLE_TASKS;
+         selectQuery = "SELECT  * FROM " + TaskTable.TABLE_TASKS;
+        }
+        else {
+            selectQuery = "SELECT  * FROM " + TaskTable.TABLE_TASKS + " WHERE "+ TaskTable.COLUMN_PRIORITY + " = 'true'";
+        }
 
         database = dbHelper.getWritableDatabase();
         Cursor cursor = database.rawQuery(selectQuery, null);

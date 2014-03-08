@@ -29,5 +29,7 @@
     <string name="clear">Clear</string>
     <string name="set">Set</string>
     <string name="waiting_for_loc">Waiting for location...</string>
+    <string name="show_important">Show Important</string>
+    <string name="show_all">Show All</string>
 
 </resources>

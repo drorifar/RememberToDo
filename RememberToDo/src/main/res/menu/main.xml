@@ -6,5 +6,12 @@
         android:icon="@drawable/ic_action_new_event"
         android:title="@string/action_add"
         myapp:showAsAction="ifRoom|withText" />
-
+    <!-- Show only high priority -->
+    <item android:id="@+id/action_priority"
+        android:title="@string/show_important"
+        myapp:showAsAction="never" />
+    <!-- Show All Tasks -->
+    <item android:id="@+id/action_show_all"
+        android:title="@string/show_all"
+        myapp:showAsAction="never" />
 </menu>

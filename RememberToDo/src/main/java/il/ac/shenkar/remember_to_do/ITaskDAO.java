@@ -26,5 +26,5 @@ public interface ITaskDAO {
      * @return List of all tasks
      * @throws ParseException
      */
-    public abstract List<Task> getAllTasks()throws ParseException;
+    public abstract List<Task> getAllTasks( boolean isImportant)throws ParseException;
 }

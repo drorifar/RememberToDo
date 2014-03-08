@@ -22,7 +22,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
     public TaskListBaseAdapter(android.content.Context context) {
         this.context = context;
-        this.dao = TaskDAO.getInstance(context);
+        this.dao = TaskDAO.getInstance(context, false);
         this.l_Inflater = LayoutInflater.from(context);
     }
 
