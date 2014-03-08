@@ -5,6 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_task">New Task</string>
+    <string name="title_location_task">Set Location</string>
+    <string name="title_update">Edit Task</string>
 
     <string name="addTask">Add Task</string>
     <string name="task_description">Description</string>

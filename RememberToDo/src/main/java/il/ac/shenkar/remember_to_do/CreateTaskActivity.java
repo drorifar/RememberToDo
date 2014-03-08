@@ -330,9 +330,9 @@ public class CreateTaskActivity extends ActionBarActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (resultCode == RESULT_OK) { 
-             if (requestCode == VR_REQUEST ) {
-                 //store the returned word list as an ArrayList
+        if (resultCode == RESULT_OK) {
+            if (requestCode == VR_REQUEST ) {
+                //store the returned word list as an ArrayList
                 ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (suggestedWords != null && !suggestedWords.isEmpty())
                 {
@@ -344,7 +344,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                 //store the returned word list as an ArrayList
                 Bundle bundle = data.getExtras();
                 if (bundle != null && bundle.containsKey("location"))
-                       location = bundle.getString("location");
+                    location = bundle.getString("location");
                 final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
                 final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
                 if (location != null && !location.isEmpty()){
@@ -447,16 +447,22 @@ public class CreateTaskActivity extends ActionBarActivity {
 
     /**
      * the option menu onCreate method
-     * @param menu 
+     * @param menu
      * @return
-    */
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         if (isEdit)
-               inflater.inflate(R.menu.edit_menu, menu);
-        else inflater.inflate(R.menu.add_menu, menu);
+        {
+            setTitle(R.string.title_update);
+            inflater.inflate(R.menu.edit_menu, menu);
+        }
+        else
+        {
+            inflater.inflate(R.menu.add_menu, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
