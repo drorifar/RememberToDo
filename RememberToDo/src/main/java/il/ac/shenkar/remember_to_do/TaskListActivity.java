@@ -3,17 +3,18 @@ package il.ac.shenkar.remember_to_do;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ActionMode;
-import android.support.v7.app.ActionBarActivity;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
+import com.google.analytics.tracking.android.EasyTracker;
 
 /**
  * the main_list_view activity - the tasks list view
@@ -201,6 +202,18 @@ public class TaskListActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);  // Add this method.
     }
 
 }
