@@ -53,8 +53,8 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:id="@+id/camera"
-                            android:src="@drawable/camera"
+                            android:id="@+id/notes"
+                            android:src="@drawable/notes"
                             android:adjustViewBounds="true"
                             android:layout_marginRight="5dp"/>
 

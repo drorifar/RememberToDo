@@ -13,7 +13,7 @@ public class TasksDatabaseHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "taskstable.db";
     // Database Version
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     //C'tor
     public TasksDatabaseHelper(Context context) {

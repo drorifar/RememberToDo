@@ -1,10 +1,8 @@
 package il.ac.shenkar.remember_to_do;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -26,11 +24,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.util.Log;
 
 
 /**
@@ -58,15 +51,13 @@ public class CreateTaskActivity extends ActionBarActivity {
     String stringTimeReminder = "";
 
     //location verb
-    String location ="";
+    String location = "";
 
     //boolean flag for set reminder
     boolean isReminder;
 
-    //add pic verb
-    Uri selectedImageUri;
-    String  selectedPath;
-    boolean isPicFromCam = false;
+    //add notes verb
+    String notes = "";;
 
     //is priority flag
     boolean isPriority = false;
@@ -92,8 +83,8 @@ public class CreateTaskActivity extends ActionBarActivity {
         setReminderButton.setOnClickListener(setReminderButtonListener);
 
         //set image button listener
-        final ImageView setImageButton = (ImageView) findViewById(R.id.add_image_button);
-        setImageButton.setOnClickListener(setImageButtonListener);
+        final ImageView setImageButton = (ImageView) findViewById(R.id.add_notes_button);
+        setImageButton.setOnClickListener(setNotesButtonListener);
 
         //set location button listener
         final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
@@ -122,7 +113,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         @Override
         public void onClick(View v) {
             Bundle taskDetailsBundle = new Bundle();
-            taskDetailsBundle.putString("location",location);
+            taskDetailsBundle.putString("location", location);
             Intent passDataIntent=(new Intent(CreateTaskActivity.this, LocationActivity.class));
             passDataIntent.putExtras(taskDetailsBundle);
             //start edit selected list item activity
@@ -179,13 +170,13 @@ public class CreateTaskActivity extends ActionBarActivity {
     };
 
     /**
-     * Showing new dialog for add pic
+     * Showing new dialog for add notes
      */
-    private final View.OnClickListener setImageButtonListener = new View.OnClickListener(){
+    private final View.OnClickListener setNotesButtonListener = new View.OnClickListener(){
 
         @Override
         public void onClick(View v) {
-            Image_Picker_Dialog();
+            Notes_Dialog();
         }
     };
 
@@ -267,11 +258,10 @@ public class CreateTaskActivity extends ActionBarActivity {
             isPriority = true;
         }
 
-        if (existTask.getImageUri()!= null) {
-            final ImageView preview = (ImageView) findViewById(R.id.add_image_button);
-            preview.setImageURI(existTask.getImageUri());
-            selectedPath = existTask.getImagePath();
-            selectedImageUri = existTask.getImageUri();
+        if (existTask.getNotes()!= null && !existTask.getNotes().isEmpty()) {
+            final ImageView NotesButton = (ImageView) findViewById(R.id.add_notes_button);
+            NotesButton.setImageResource(R.drawable.notes);
+            notes = existTask.getNotes();
         }
 
         taskId = receivedDataBundle.getLong("id");
@@ -288,11 +278,10 @@ public class CreateTaskActivity extends ActionBarActivity {
         EditText editTextTitle = (EditText) findViewById(R.id.title);
         String title = editTextTitle.getText().toString();
 
-
         Long id = System.currentTimeMillis();
 
         //add task to DB
-        dao.addTask( new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam));
+        dao.addTask( new Task(id, title, stringTimeReminder,location,  isPriority, notes));
 
         Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
 
@@ -317,7 +306,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         Long id = System.currentTimeMillis();
 
-        Task updatedTask = new Task(id, title, stringTimeReminder,location, selectedImageUri, isPriority, selectedPath, isPicFromCam);
+        Task updatedTask = new Task(id, title, stringTimeReminder,location, isPriority, notes);
         updatedTask.setId(taskId);
 
         //update task in DB
@@ -341,33 +330,8 @@ public class CreateTaskActivity extends ActionBarActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        final ImageView preview = (ImageView) findViewById(R.id.add_image_button);
-
         if (resultCode == RESULT_OK) { 
-            if(data.getData() != null){
-                selectedImageUri = data.getData();
-            }
-
-            if (requestCode == CAMERA_PICTURE_REQUEST) {
-                if ( selectedImageUri == null && data.getExtras() != null &&  data.getExtras().get( "data" ) instanceof Bitmap ) {
-                    selectedImageUri = Utilities.createUriFromPhotoIntentForHtcDesireHD( this, data, selectedImageUri );
-                    isPicFromCam = true;
-                    preview.setImageURI(selectedImageUri);
-                }
-                else {
-                    selectedPath = getPath(selectedImageUri);
-                    preview.setImageURI(selectedImageUri);
-                    Log.d("selectedPath : " ,selectedPath);
-                }
-            }
-
-            else if (requestCode == GALLERY_PICTURE_REQUEST)  {
-                selectedPath = getPath(selectedImageUri);
-                preview.setImageURI(selectedImageUri);
-                Log.d("selectedPath : " ,selectedPath);
-            }
-
-            else if (requestCode == VR_REQUEST ) {
+             if (requestCode == VR_REQUEST ) {
                  //store the returned word list as an ArrayList
                 ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 if (suggestedWords != null && !suggestedWords.isEmpty())
@@ -392,48 +356,47 @@ public class CreateTaskActivity extends ActionBarActivity {
                     setLocationTxt.setText("");
                 }
             }
-
         }
-    }
-
-    public String getPath(Uri contentUri) {
-        String res = null;
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if(cursor.moveToFirst()){;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
-        }
-        cursor.close();
-        return res;
     }
 
     /**
-     * opent the image picker dialog
+     * open the image picker dialog
      */
-    public void Image_Picker_Dialog()
-    {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-        myAlertDialog.setTitle("Pictures Option");
-        myAlertDialog.setMessage("Select Picture Mode");
+    public void Notes_Dialog() {
+        picker = new Dialog(CreateTaskActivity.this);
+        picker.setContentView(R.layout.description_layout);
+        picker.setTitle("Enter Task Description");
 
-        myAlertDialog.setPositiveButton("Gallery", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface arg0, int arg1)
-            {
-                Intent pictureActionIntent = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pictureActionIntent, GALLERY_PICTURE_REQUEST);
+        final EditText description = (EditText)picker.findViewById(R.id.description);
+        description.setText(notes);
+
+        final Button setDescription = (Button)picker.findViewById(R.id.set_descriptiom);
+        final Button clearDescription = (Button)picker.findViewById(R.id.clear);
+
+        setDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notes = description.getText().toString();
+                picker.dismiss();
+                final ImageView setNotesButton = (ImageView) findViewById(R.id.add_notes_button);
+                if (notes != null && !notes.isEmpty()){
+                    setNotesButton.setImageResource(R.drawable.notes);
+                }
+                else {
+                    setNotesButton.setImageResource(R.drawable.notes_gray);
+                }
             }
         });
-        myAlertDialog.setNegativeButton("Camera", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                Intent pictureActionIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(pictureActionIntent, CAMERA_PICTURE_REQUEST);
+        clearDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notes = "";
+                picker.dismiss();
+                final ImageView setNotesButton = (ImageView) findViewById(R.id.add_notes_button);
+                setNotesButton.setImageResource(R.drawable.notes_gray);
             }
         });
-        myAlertDialog.show();
+        picker.show();
     }
 
     /**

@@ -141,16 +141,14 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 boolean dismiss = false;
                 boolean dismissRight = false;
 
-                if (Math.abs(deltaX) > mViewWidth /1.5)
-                {
+                if (Math.abs(deltaX) > mViewWidth /1.5){
                     dismiss = true;
                     dismissRight = deltaX > 280;
                     //Log.i(getClass().getSimpleName(), "delta >10");
                 }
 
 
-                if (dismiss)
-                {
+                if (dismiss) {
                     // dismiss
                     final View downView = mDownView; // mDownView gets null'd before animation ends
                     final int downPosition = mDownPosition;

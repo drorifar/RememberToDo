@@ -62,21 +62,11 @@ public class TaskDAO implements ITaskDAO  {
 
         ContentValues values = new ContentValues();
         values.put(TaskTable.COLUMN_TITLE, taskObj.getTitle());
-        if (taskObj.getImageUri()!=null) {
-            if (taskObj.isPicFromCam()) {
-                String selectedPath = taskObj.getImageUri().getPath();
-                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
-            }
-            else {
-                String selectedPath = taskObj.getImagePath();
-                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
-            }
-        }
+        values.put(TaskTable.COLUMN_NOTES, taskObj.getNotes());
         values.put(TaskTable.COLUMN_LOCATION, taskObj.getLocation());
         values.put(TaskTable.COLUMN_DATE, taskObj.getDate());
         String isPriority = "false";
-        if (taskObj.isPriority())
-        {
+        if (taskObj.isPriority()) {
             isPriority = "true";
         }
         values.put(TaskTable.COLUMN_PRIORITY, isPriority);
@@ -127,11 +117,7 @@ public class TaskDAO implements ITaskDAO  {
                 taskDetails.setTitle(cursor.getString(1));
                 taskDetails.setDate(cursor.getString(2));
                 taskDetails.setLocation(cursor.getString(3));
-                taskDetails.setImagePath(cursor.getString(4));
-                if (taskDetails.getImagePath() != null && !taskDetails.getImagePath().isEmpty())
-                {
-                        taskDetails.setImageUri(Uri.fromFile(new File(taskDetails.getImagePath())));
-                }
+                taskDetails.setNotes(cursor.getString(4));
                 String isPriority = (cursor.getString(5));
                 if (isPriority != null && !isPriority.isEmpty())
                     taskDetails.setPriorityFromString(isPriority);
@@ -170,21 +156,11 @@ public class TaskDAO implements ITaskDAO  {
 
         ContentValues values = new ContentValues();
         values.put(TaskTable.COLUMN_TITLE, updatedTask.getTitle());
-        if (updatedTask.getImageUri()!=null) {
-            if (updatedTask.isPicFromCam()) {
-                String selectedPath = updatedTask.getImageUri().getPath();
-                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
-            }
-            else {
-                String selectedPath = updatedTask.getImagePath();
-                values.put(TaskTable.COLUMN_IMAGE_URI, selectedPath);
-            }
-        }
+        values.put(TaskTable.COLUMN_NOTES, updatedTask.getNotes());
         values.put(TaskTable.COLUMN_LOCATION, updatedTask.getLocation());
         values.put(TaskTable.COLUMN_DATE, updatedTask.getDate());
         String isPriority = "false";
-        if (updatedTask.isPriority())
-        {
+        if (updatedTask.isPriority()) {
             isPriority = "true";
         }
         values.put(TaskTable.COLUMN_PRIORITY, isPriority);

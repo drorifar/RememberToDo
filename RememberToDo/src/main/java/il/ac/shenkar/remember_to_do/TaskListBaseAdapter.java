@@ -36,7 +36,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
             holder.txt_time = (TextView) convertView.findViewById(R.id.time);
             holder.txt_location = (TextView) convertView.findViewById(R.id.location);
             holder.img_priority = (ImageView) convertView.findViewById(R.id.exclamation_mark);
-            holder.img_cam = (ImageView) convertView.findViewById(R.id.camera);
+            holder.img_notes = (ImageView) convertView.findViewById(R.id.notes);
             holder.img_clock = (ImageView) convertView.findViewById(R.id.alarm_clock);
             holder.img_map = (ImageView) convertView.findViewById(R.id.map);
             holder.bt_done = (ImageView) convertView.findViewById(R.id.done_button);
@@ -60,42 +60,34 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
         String date = getItem(position).getDate();
         String location = getItem(position).getLocation();
-        Uri imageUri = getItem(position).getImageUri();
+        String notes = getItem(position).getNotes();
 
-        if (imageUri == null)
-        {
-            holder.img_cam.setVisibility(View.INVISIBLE);
+        if (notes == null || notes.isEmpty()) {
+            holder.img_notes.setVisibility(View.INVISIBLE);
         }
-        else
-        {
-            holder.img_cam.setVisibility(View.VISIBLE);
-           // holder.img_cam.setImageURI(imageUri);
+        else  {
+            holder.img_notes.setVisibility(View.VISIBLE);
         }
 
-        if (date == null || date.isEmpty())
-        {
+        if (date == null || date.isEmpty())  {
             holder.txt_time.setVisibility(View.INVISIBLE);
             holder.img_clock.setVisibility(View.INVISIBLE);
         }
-        else
-        {
+        else {
             holder.txt_time.setVisibility(View.VISIBLE);
             holder.img_clock.setVisibility(View.VISIBLE);
             holder.txt_time.setText(date);
         }
 
-        if (location == null || location.isEmpty())
-        {
+        if (location == null || location.isEmpty()) {
             holder.txt_location.setVisibility(View.INVISIBLE);
             holder.img_map.setVisibility(View.INVISIBLE);
         }
-        else
-        {
+        else {
             holder.txt_location.setVisibility(View.VISIBLE);
             holder.img_map.setVisibility(View.VISIBLE);
             holder.txt_location.setText(location);
         }
-
         if (!getItem(position).isPriority()) {
             holder.img_priority.setVisibility(View.INVISIBLE);
         }
@@ -140,7 +132,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
         ImageView img_clock;
         ImageView img_priority;
         ImageView img_map;
-        ImageView img_cam;
+        ImageView img_notes;
         ImageView bt_done;
     }
 }

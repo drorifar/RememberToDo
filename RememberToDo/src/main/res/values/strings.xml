@@ -14,6 +14,8 @@
     <string name="button_done">Done</string>
     <string name="button_set_reminder">Set Reminder</string>
     <string name="button_random">Random</string>
+    <string name="enter_description">Enter Description</string>
+
 
     <string name="no_tasks">No Tasks</string>
     <string name="action_add">Add Task</string>

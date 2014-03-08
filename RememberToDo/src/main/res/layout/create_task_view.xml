@@ -75,15 +75,15 @@
             android:singleLine="false"
             android:layout_gravity="center_vertical"
             android:layout_alignBottom="@+id/location_reminder_button"
-            android:layout_alignLeft="@+id/add_image_button"
-            android:layout_alignStart="@+id/add_image_button" />
+            android:layout_alignLeft="@+id/add_notes_button"
+            android:layout_alignStart="@+id/add_notes_button" />
 
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/add_image_button"
-            android:src="@drawable/camera_gray"
+            android:id="@+id/add_notes_button"
+            android:src="@drawable/notes_gray"
             android:adjustViewBounds="true"
             android:layout_below="@+id/location_reminder_txt"
             android:layout_toRightOf="@+id/location_reminder_button"
@@ -98,8 +98,8 @@
             android:id="@+id/priority_button"
             android:src="@drawable/exclamation_gray"
             android:adjustViewBounds="true"
-            android:layout_below="@+id/add_image_button"
-            android:layout_toRightOf="@+id/add_image_button"
+            android:layout_below="@+id/add_notes_button"
+            android:layout_toRightOf="@+id/add_notes_button"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp" />
 

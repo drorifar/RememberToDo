@@ -9,11 +9,9 @@ public class Task {
     private Long id;
     private String title;
     private String date;
-    private Uri imageUri;
     private boolean isPriority;
     private String location;
-    private String imagePath;
-    private boolean isPicFromCam;
+    private String notes;
 
     public Task(){}
 
@@ -23,20 +21,15 @@ public class Task {
      * @param title - task title
      * @param date - task date
      * @param location - task location
-     * @param imageUri - task attach Image Uri
      * @param isPriority - boolean if its high priority
-     * @param imgPath - the img path
-     * @param isPicFromCam - if the pic that taken is from the camera or gallery
      */
-    public Task(Long id, String title, String date, String location, Uri imageUri, boolean isPriority, String imgPath, boolean isPicFromCam){
+    public Task(Long id, String title, String date, String location, boolean isPriority, String notes){
         setId(id);
         setTitle(title);
         setDate(date);
-        setImageUri(imageUri);
         setPriority(isPriority);
         setLocation(location);
-        setImagePath(imgPath);
-        setPicFromCam(isPicFromCam);
+        setNotes(notes);
     }
 
     //setters and getters
@@ -65,14 +58,6 @@ public class Task {
         this.id = id;
     }
 
-    public Uri getImageUri() {
-        return imageUri;
-    }
-
-    public void setImageUri(Uri imageUri) {
-        this.imageUri = imageUri;
-    }
-
     public boolean isPriority() {
         return isPriority;
     }
@@ -95,19 +80,12 @@ public class Task {
         this.location = location;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    public boolean isPicFromCam() {
-        return isPicFromCam;
-    }
-
-    public void setPicFromCam(boolean isCamera) {
-        this.isPicFromCam = isCamera;
-    }
 }

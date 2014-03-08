@@ -16,13 +16,13 @@ public class TaskTable {
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_LOCATION = "location";
     public static final String COLUMN_DATE = "date";
-    public static final String COLUMN_IMAGE_URI = "imageUri";
+    public static final String COLUMN_NOTES = "notes";
     public static final String COLUMN_PRIORITY = "isPriority";
 
     private static final  String CREATE_TASKS_TABLE = " CREATE TABLE " + TABLE_TASKS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_TITLE + " TEXT,"
                 + COLUMN_DATE + " TEXT,"  + COLUMN_LOCATION + " TEXT,"
-                + COLUMN_IMAGE_URI + " TEXT," + COLUMN_PRIORITY + " TEXT"
+                + COLUMN_NOTES + " TEXT," + COLUMN_PRIORITY + " TEXT"
                 + ")";
 
 
