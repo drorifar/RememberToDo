@@ -41,7 +41,6 @@
                             android:src="@drawable/exclamation_mark"
                             android:layout_marginRight="5dp"
                             android:adjustViewBounds="true" />
-
                     </LinearLayout>
 
                     <LinearLayout

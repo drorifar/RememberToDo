@@ -27,4 +27,9 @@ public interface ITaskDAO {
      * @throws ParseException
      */
     public abstract List<Task> getAllTasks( boolean isImportant)throws ParseException;
+
+    /**
+     *delete all the tasks from DB
+     */
+    public void deleteAllTasks();
 }

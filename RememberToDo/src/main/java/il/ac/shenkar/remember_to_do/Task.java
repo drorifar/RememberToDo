@@ -32,6 +32,15 @@ public class Task {
         setNotes(notes);
     }
 
+    public Task(TaskForCloud taskFromCloud){
+        setId(System.currentTimeMillis());
+        setTitle(taskFromCloud.getTitle());
+        setDate(taskFromCloud.getDate());
+        setPriorityFromString(taskFromCloud.getIsPriority());
+        setLocation(taskFromCloud.getLocation());
+        setNotes(taskFromCloud.getNotes());
+    }
+
     //setters and getters
 
     public void setTitle(String title){

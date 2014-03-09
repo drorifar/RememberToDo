@@ -1,20 +1,31 @@
 package il.ac.shenkar.remember_to_do;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.ActionMode;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ActionMode;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
-import com.google.analytics.tracking.android.EasyTracker;
+
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 /**
  * the main_list_view activity - the tasks list view
@@ -27,6 +38,8 @@ public class TaskListActivity extends ActionBarActivity {
     private TaskDAO dao;
     int selectedItemPosition;
     private ShareActionProvider mShareActionProvider;
+    String userName;
+    public enum CloudOptionsEnum {UPLOAD, DOWNLOAD}
 
     public TaskListActivity() {}
 
@@ -35,6 +48,10 @@ public class TaskListActivity extends ActionBarActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_list_view);
+
+        //initializing the parse cloud
+        ParseObject.registerSubclass(TaskForCloud.class);
+        Parse.initialize(this, "ADShhrgdbLs87kgP0vUrI9mQfwRnJ2RoNpSUevOB", "Q1fl5Hzx9dtxoO76c8IQt29VnRnzMs5hlyYHD8v3");
 
         context = this;
 
@@ -199,21 +216,111 @@ public class TaskListActivity extends ActionBarActivity {
                 dao.getAllTasks(false);
                 adapter.notifyDataSetChanged();
                 return true;
+            case R.id.action_upload_to_cloud:
+                User_Dialog(CloudOptionsEnum.UPLOAD);
+                return true;
+            case R.id.action_download_from_cloud:
+                User_Dialog(CloudOptionsEnum.DOWNLOAD);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+    /**
+     * open the image picker dialog
+     */
+    public void User_Dialog(final CloudOptionsEnum cloudOption) {
+        final Dialog picker = new Dialog(TaskListActivity.this);
+        picker.setContentView(R.layout.user_layout);
+        picker.setTitle("Enter User Name");
+
+        final EditText user_name = (EditText)picker.findViewById(R.id.user_name);
+        user_name.setText(userName);
+
+        final Button setUserName = (Button)picker.findViewById(R.id.set);
+
+        setUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userName = user_name.getText().toString();
+                picker.dismiss();
+                if (userName != null || !userName.isEmpty()) {
+                    if (cloudOption == CloudOptionsEnum.UPLOAD){
+                        uploadToCloud(userName);
+                    }
+                    else downloadFromCloud(userName);
+                }
+            }
+        });
+        picker.show();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        EasyTracker.getInstance(this).activityStop(this);  // Add this method.
+    /**
+     * upload all the user tasks to the cloud
+     */
+    private void uploadToCloud(String userName) {
+        // delete all the user current tasks before uploading
+        deleteAllFromCloud(userName);
+        //get all the tasks from DB
+        dao.getAllTasks(false);
+
+        if (!dao.isEmpty()){
+            for (int i = 0; i < dao.getCount(); i++) {
+                if (dao.getItem(i) != null){
+                    TaskForCloud todoItem = new TaskForCloud(dao.getItem(i), userName);
+                    todoItem.saveInBackground();
+                }
+            }
+        }
+        Toast.makeText(getBaseContext(), "Save On Cloud", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * download all the user tasks from the cloud
+     */
+    private void downloadFromCloud(String userName) {
+        // Define the class we would like to query
+        ParseQuery<TaskForCloud> query = ParseQuery.getQuery(TaskForCloud.class);
+        // Define our query conditions
+        query.whereEqualTo("user_name", userName);
+        // Execute the find asynchronously
+        query.findInBackground(new FindCallback<TaskForCloud>() {
+            public void done(List<TaskForCloud> itemList, ParseException e) {
+                if (e == null && itemList != null && itemList.size() > 0) {
+                    // Access the array of results
+                    dao.deleteAllTasks();
+                    for (TaskForCloud taskFromCloud : itemList){
+                        Task newTask = new Task(taskFromCloud);
+                        dao.addTask(newTask);
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getBaseContext(),"User Name Has No Tasks", Toast.LENGTH_LONG).show();
+                    Log.d("item", "Error: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    /**
+     * delete all the user tasks from the cloud
+     */
+    private void deleteAllFromCloud(String userName){
+        // Define the class we would like to query
+        ParseQuery<TaskForCloud> query = ParseQuery.getQuery(TaskForCloud.class);
+        // Define our query conditions
+        query.whereEqualTo("user_name", userName);
+        // Execute the find asynchronously
+        query.findInBackground(new FindCallback<TaskForCloud>() {
+            public void done(List<TaskForCloud> itemList, ParseException e) {
+                if (e == null && itemList != null && itemList.size() > 0) {
+                    // Access the array of results
+                    for (TaskForCloud taskFromCloud : itemList){
+                        taskFromCloud.deleteInBackground();
+                    }
+                }
+            }
+        });
+    }
 }

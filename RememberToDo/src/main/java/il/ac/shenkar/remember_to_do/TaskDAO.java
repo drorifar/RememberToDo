@@ -98,6 +98,7 @@ public class TaskDAO implements ITaskDAO  {
     }
 
 
+
     /**
      *
      *  @return ArrayList<TaskDetails> of all tasks
@@ -175,5 +176,23 @@ public class TaskDAO implements ITaskDAO  {
 
         database.update(TaskTable.TABLE_TASKS, values, TaskTable.COLUMN_ID + "=" + updatedTask.getId(), null);
         database.close();
+    }
+
+    /**
+     *delete all the tasks from DB
+     */
+    @Override
+    public void deleteAllTasks() {
+        getAllTasks(false);
+        database = dbHelper.getWritableDatabase();
+        for (int i = 0; i < getCount(); i++) {
+            if (getItem(i) != null){
+                //delete from DB
+                database.delete(TaskTable.TABLE_TASKS, TaskTable.COLUMN_ID + "=?",
+                        new String[]{String.valueOf(getItem(i).getId())});
+            }
+        }
+        database.close();
+        taskList = new ArrayList<Task>();
     }
 }

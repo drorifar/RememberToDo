@@ -6,9 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 public class MyWidgetProvider extends AppWidgetProvider {
 

@@ -14,4 +14,12 @@
     <item android:id="@+id/action_show_all"
         android:title="@string/show_all"
         myapp:showAsAction="never" />
+    <!-- Upload To Cloud -->
+    <item android:id="@+id/action_upload_to_cloud"
+        android:title="@string/upload_to_cloud"
+        myapp:showAsAction="never" />
+    <!-- Download From Cloud -->
+    <item android:id="@+id/action_download_from_cloud"
+        android:title="@string/download_from_cloud"
+        myapp:showAsAction="never" />
 </menu>

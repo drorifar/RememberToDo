@@ -33,5 +33,9 @@
     <string name="waiting_for_loc">Waiting for location...</string>
     <string name="show_important">Show Important</string>
     <string name="show_all">Show All</string>
+    <string name="download_from_cloud">download from cloud</string>
+    <string name="upload_to_cloud">upload to cloud</string>
+    <string name="enter_user_name">enter user name</string>
+    <string name="login">login</string>
 
 </resources>

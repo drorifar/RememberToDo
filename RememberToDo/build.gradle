@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
 apply plugin: 'android'
@@ -35,5 +35,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.1.32'
     compile 'com.android.support:support-v13:+'
     compile files('libs/libGoogleAnalyticsServices.jar')
+    compile files('libs/Parse-1.4.1.jar')
 }
 
