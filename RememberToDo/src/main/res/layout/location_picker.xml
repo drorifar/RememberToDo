@@ -24,7 +24,7 @@
             android:id="@+id/myLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/my_location"
+            android:src="@drawable/ic_action_device_access_location_found"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
