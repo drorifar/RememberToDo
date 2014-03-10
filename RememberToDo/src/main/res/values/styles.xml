@@ -9,4 +9,14 @@
 
     <color name="red">#fff00000</color>
 
+    <color name="custom_theme_color">#cccccc</color>
+
+    <style name="ToDoTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:displayOptions">showHome</item>
+        <item name="displayOptions">showHome</item>
+        <item name="android:windowBackground">@color/custom_theme_color</item>
+        <item name="android:colorBackground">@color/custom_theme_color</item>
+    </style>
+
+
 </resources>

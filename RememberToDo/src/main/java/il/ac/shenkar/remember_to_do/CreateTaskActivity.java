@@ -148,7 +148,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                     stringTimeReminder = Utilities.getDateTime(calendar);
                     picker.dismiss();
                     final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-                    setReminderButton.setImageResource(R.drawable.alarm_clock);
+                    setReminderButton.setImageResource(R.drawable.ic_alarm);
                     final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
                     setReminderTxt.setText(stringTimeReminder);
                 }
@@ -160,7 +160,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                     stringTimeReminder = "";
                     picker.dismiss();
                     final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-                    setReminderButton.setImageResource(R.drawable.alarmclock_gray);
+                    setReminderButton.setImageResource(R.drawable.ic_alarm_opa);
                     final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
                     setReminderTxt.setText(stringTimeReminder);
                 }
@@ -208,9 +208,9 @@ public class CreateTaskActivity extends ActionBarActivity {
             final ImageView priorityButton = (ImageView) findViewById(R.id.priority_button);
             if (isPriority)
             {
-                priorityButton.setImageResource(R.drawable.exclamation_mark);
+                priorityButton.setImageResource(R.drawable.ic_important);
             }
-            else priorityButton.setImageResource(R.drawable.exclamation_gray);
+            else priorityButton.setImageResource(R.drawable.ic_important_opa);
         }
     };
 
@@ -230,11 +230,11 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         if (existTask.getDate()== null || existTask.getDate().isEmpty()) {
             final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-            setReminderButton.setImageResource(R.drawable.alarmclock_gray);
+            setReminderButton.setImageResource(R.drawable.ic_alarm_opa);
         }
         else {
             final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-            setReminderButton.setImageResource(R.drawable.alarm_clock);
+            setReminderButton.setImageResource(R.drawable.ic_alarm);
             final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
             setReminderTxt.setText(existTask.getDate());
             stringTimeReminder = existTask.getDate();
@@ -242,25 +242,25 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         if (existTask.getLocation()== null || existTask.getLocation().isEmpty()) {
             final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setLocationButton.setImageResource(R.drawable.map_gray);
+            setLocationButton.setImageResource(R.drawable.ic_location_opa);
         }
         else {
             location = existTask.getLocation();
             final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setLocationButton.setImageResource(R.drawable.map);
+            setLocationButton.setImageResource(R.drawable.ic_location);
             final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
             setLocationTxt.setText(location);
         }
 
         if(existTask.isPriority()) {
             final ImageView PriorityButton = (ImageView) findViewById(R.id.priority_button);
-            PriorityButton.setImageResource(R.drawable.exclamation_mark);
+            PriorityButton.setImageResource(R.drawable.ic_important);
             isPriority = true;
         }
 
         if (existTask.getNotes()!= null && !existTask.getNotes().isEmpty()) {
             final ImageView NotesButton = (ImageView) findViewById(R.id.add_notes_button);
-            NotesButton.setImageResource(R.drawable.notes);
+            NotesButton.setImageResource(R.drawable.ic_note);
             notes = existTask.getNotes();
         }
 
@@ -348,11 +348,11 @@ public class CreateTaskActivity extends ActionBarActivity {
                 final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
                 final TextView setLocationTxt = (TextView) findViewById(R.id.location_reminder_txt);
                 if (location != null && !location.isEmpty()){
-                    setLocationButton.setImageResource(R.drawable.map);
+                    setLocationButton.setImageResource(R.drawable.ic_location);
                     setLocationTxt.setText(location);
                 }
                 else {
-                    setLocationButton.setImageResource(R.drawable.map_gray);
+                    setLocationButton.setImageResource(R.drawable.ic_location_opa);
                     setLocationTxt.setText("");
                 }
             }
@@ -380,10 +380,10 @@ public class CreateTaskActivity extends ActionBarActivity {
                 picker.dismiss();
                 final ImageView setNotesButton = (ImageView) findViewById(R.id.add_notes_button);
                 if (notes != null && !notes.isEmpty()){
-                    setNotesButton.setImageResource(R.drawable.notes);
+                    setNotesButton.setImageResource(R.drawable.ic_note);
                 }
                 else {
-                    setNotesButton.setImageResource(R.drawable.notes_gray);
+                    setNotesButton.setImageResource(R.drawable.ic_note_opa);
                 }
             }
         });
@@ -393,7 +393,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                 notes = "";
                 picker.dismiss();
                 final ImageView setNotesButton = (ImageView) findViewById(R.id.add_notes_button);
-                setNotesButton.setImageResource(R.drawable.notes_gray);
+                setNotesButton.setImageResource(R.drawable.ic_note_opa);
             }
         });
         picker.show();

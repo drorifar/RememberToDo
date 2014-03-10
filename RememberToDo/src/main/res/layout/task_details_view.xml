@@ -30,16 +30,18 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:id="@+id/alarm_clock"
-                            android:src="@drawable/alarm_clock"
+                            android:src="@drawable/ic_alarm"
                             android:adjustViewBounds="true"
-                            android:layout_marginRight="5dp"/>
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="5dp"/>
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:id="@+id/exclamation_mark"
-                            android:src="@drawable/exclamation_mark"
+                            android:src="@drawable/ic_important"
                             android:layout_marginRight="5dp"
+                            android:layout_marginTop="5dp"
                             android:adjustViewBounds="true" />
                     </LinearLayout>
 
@@ -53,16 +55,18 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:id="@+id/notes"
-                            android:src="@drawable/notes"
+                            android:src="@drawable/ic_note"
                             android:adjustViewBounds="true"
-                            android:layout_marginRight="5dp"/>
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="5dp"/>
 
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:id="@+id/map"
-                            android:src="@drawable/map"
+                            android:src="@drawable/ic_location"
                             android:layout_marginRight="5dp"
+                            android:layout_marginBottom="5dp"
                             android:adjustViewBounds="true"/>
 
                     </LinearLayout>
@@ -82,7 +86,7 @@
                 <TextView android:id="@+id/title"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="#ff8f45"
+                    android:textColor="#292929"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoText="false"
@@ -95,14 +99,16 @@
                         android:layout_height="wrap_content"
                         android:text="no time"
                         android:layout_alignParentStart="true"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:layout_marginTop="5dp"/>
 
                     <TextView android:id="@+id/location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="no location"
                         android:layout_alignParentStart="true"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:layout_marginTop="5dp"/>
 
                 </LinearLayout>
 
@@ -110,25 +116,15 @@
         </LinearLayout>
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/done_button"
-            android:src="@drawable/trash_bin"
-            android:adjustViewBounds="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="25dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="0dp" />
-
-        <ImageView
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="30dp"
-            android:id="@+id/arrow"
-            android:src="@drawable/arrow_right"
+            android:id="@+id/done_button"
+            android:src="@drawable/ic_arrow_trash"
             android:adjustViewBounds="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="false"
             android:layout_alignParentEnd="false"
-            android:layout_marginTop="7dp" />
+            android:layout_marginTop="25dp"
+            />
 
     </RelativeLayout>
