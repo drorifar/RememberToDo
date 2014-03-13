@@ -13,14 +13,16 @@ import java.util.ArrayList;
 
 /**
  * This class manage notification sending
+ * @author Dror Afargan & Ran Nahmijas
  */
+
 public class ReminderBroadcastReceiver extends BroadcastReceiver {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onReceive(Context context, Intent intent) {
 
         //Receiving data from CreateTaskActivity
-        ArrayList<String> arrayListExtra = intent.getStringArrayListExtra(CreateTaskActivity.EXTRA_LIST);
+        ArrayList<String> arrayListExtra = intent.getStringArrayListExtra(ReminderAlarmManager.EXTRA_LIST);
 
         Intent taskListIntent = new Intent(context, TaskListActivity.class);
         Long taskId = intent.getLongExtra("id", 0);
@@ -28,7 +30,7 @@ public class ReminderBroadcastReceiver extends BroadcastReceiver {
 
         // Build notification
         Notification n = new Notification.Builder(context)
-                .setContentTitle("Reminder from ToToDo")
+                .setContentTitle("Reminder from E.Z.Do")
                 .setContentText("The Task: " + arrayListExtra.get(1))
                 .setSmallIcon(R.drawable.ic_board)
                 .setContentIntent(pIntent).build();

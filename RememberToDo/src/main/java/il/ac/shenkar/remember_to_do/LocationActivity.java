@@ -35,6 +35,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
+/**
+ * This class manage giofance in the app
+ * @author Dror Afargan & Ran Nahmijas
+ */
 public class LocationActivity extends FragmentActivity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener{
@@ -54,7 +58,7 @@ public class LocationActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.location_picker);
+        setContentView(R.layout.location_picker_layout);
 
         //lock the screen in portrait orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -132,7 +136,7 @@ public class LocationActivity extends FragmentActivity implements
         }
         );
 
-        //checks if its a new task or existing task
+        //checks if its a new ic_task_board or existing ic_task_board
         if (receivedDataBundle != null)  {
             if (receivedDataBundle.getString("location") != null && !receivedDataBundle.getString("location").isEmpty()) {
                 mLocationIn.setText(receivedDataBundle.getString("location"));

@@ -1,18 +1,18 @@
 package il.ac.shenkar.remember_to_do;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
+/**
+ *  This class is the list adapter for the taskList
+ * @author Dror Afargan & Ran Nahmijas
+ *
+ */
 public class TaskListBaseAdapter extends BaseAdapter {
 
     private Context context;
@@ -55,7 +55,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
     private void setAttachments(ViewHolder holder, int position)
     {
-
         holder.txt_itemName.setText(getItem(position).getTitle());
 
         String date = getItem(position).getDate();

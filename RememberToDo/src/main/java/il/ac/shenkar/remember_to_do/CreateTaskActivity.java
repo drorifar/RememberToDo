@@ -1,8 +1,6 @@
 package il.ac.shenkar.remember_to_do;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -27,11 +25,10 @@ import java.util.List;
 
 
 /**
- * This class manage the creation of a new task
+ * This class manage the creation of a new ic_task_board
+ * @author Dror Afargan & Ran Nahmijas
  */
 public class CreateTaskActivity extends ActionBarActivity {
-
-    public final static String EXTRA_LIST = "il.ac.shenkar.totodo.LIST";
 
     //onActivityResult Consts
     private static final int CAMERA_PICTURE_REQUEST = 1;
@@ -54,18 +51,22 @@ public class CreateTaskActivity extends ActionBarActivity {
     String location = "";
 
     //boolean flag for set reminder
-    boolean isReminder;
+    boolean isReminder = false;
 
     //add notes verb
-    String notes = "";;
+    String notes = "";
 
     //is priority flag
     boolean isPriority = false;
 
+    private ReminderAlarmManager alarmManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_task_view);
+        setContentView(R.layout.create_task_layout);
+
+        alarmManager = new ReminderAlarmManager(this);
 
         //lock the screen in portrait orientation
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -73,7 +74,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         Intent receiveDataIntent = getIntent();
         Bundle receivedDataBundle = receiveDataIntent.getExtras();
 
-        //checks if its a new task or existing task
+        //checks if its a new ic_task_board or existing ic_task_board
         if (receivedDataBundle != null)  {
             isEdit = true;
         }
@@ -98,7 +99,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         final ImageView setPriorityButton = (ImageView) findViewById(R.id.priority_button);
         setPriorityButton.setOnClickListener(setPriorityButtonListener);
 
-        //if it is an existing task set its details
+        //if it is an existing ic_task_board set its details
         if (isEdit){
             setExistTaskDetail(receivedDataBundle);
         }
@@ -128,13 +129,16 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View v) {
+            Calendar cal = Calendar.getInstance();
             picker = new Dialog(CreateTaskActivity.this);
-            picker.setContentView(R.layout.picker_frgm);
+            picker.setContentView(R.layout.date_time_picker_layout);
             picker.setTitle("Select Date and Time");
 
             datePicker = (DatePicker)picker.findViewById(R.id.datePicker);
             timePicker = (TimePicker)picker.findViewById(R.id.timePicker);
             timePicker.setIs24HourView(true);
+            timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
+            timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
             Button setDateTime = (Button)picker.findViewById(R.id.set_date_time);
             Button clearDateTime = (Button)picker.findViewById(R.id.clear);
 
@@ -160,7 +164,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                     stringTimeReminder = "";
                     picker.dismiss();
                     final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-                    setReminderButton.setImageResource(R.drawable.ic_alarm_opa);
+                    setReminderButton.setImageResource(R.drawable.ic_alarm_gray);
                     final TextView setReminderTxt = (TextView) findViewById(R.id.clock_reminder_txt);
                     setReminderTxt.setText(stringTimeReminder);
                 }
@@ -176,7 +180,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View v) {
-            Notes_Dialog();
+            notesDialog();
         }
     };
 
@@ -210,19 +214,19 @@ public class CreateTaskActivity extends ActionBarActivity {
             {
                 priorityButton.setImageResource(R.drawable.ic_important);
             }
-            else priorityButton.setImageResource(R.drawable.ic_important_opa);
+            else priorityButton.setImageResource(R.drawable.ic_important_gray);
         }
     };
 
     /**
-     * set existing task  details
-     * @param receivedDataBundle - the bundle send from the last activity - include the task position
+     * set existing ic_task_board  details
+     * @param receivedDataBundle - the bundle send from the last activity - include the ic_task_board position
      */
     private void setExistTaskDetail(Bundle receivedDataBundle) {
 
         final TaskDAO dao = TaskDAO.getInstance(this, false);
         taskPosition = receivedDataBundle.getInt("position");
-        //get the existing task by its position
+        //get the existing ic_task_board by its position
         Task existTask = dao.getItem(taskPosition);
 
         final EditText titleText = (EditText) findViewById(R.id.title);
@@ -230,7 +234,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         if (existTask.getDate()== null || existTask.getDate().isEmpty()) {
             final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
-            setReminderButton.setImageResource(R.drawable.ic_alarm_opa);
+            setReminderButton.setImageResource(R.drawable.ic_alarm_gray);
         }
         else {
             final ImageView setReminderButton = (ImageView) findViewById(R.id.add_clock_reminder);
@@ -242,7 +246,7 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         if (existTask.getLocation()== null || existTask.getLocation().isEmpty()) {
             final ImageView setLocationButton = (ImageView) findViewById(R.id.location_reminder_button);
-            setLocationButton.setImageResource(R.drawable.ic_location_opa);
+            setLocationButton.setImageResource(R.drawable.ic_location_gray);
         }
         else {
             location = existTask.getLocation();
@@ -268,7 +272,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     }
 
     /**
-     * Handling new task creation
+     * Handling new ic_task_board creation
      * @param view
      */
     public void createTask(View view) {
@@ -280,20 +284,21 @@ public class CreateTaskActivity extends ActionBarActivity {
 
         Long id = System.currentTimeMillis();
 
-        //add task to DB
-        dao.addTask( new Task(id, title, stringTimeReminder,location,  isPriority, notes));
+        //add ic_task_board to DB
+        Task taskToAdd = new Task(id, title, stringTimeReminder, location,  isPriority, notes);
+        dao.addTask(taskToAdd);
 
         Toast.makeText(this, title + " Added", Toast.LENGTH_LONG).show();
 
         //user set reminder
         if(isReminder){
-            setReminder(id, title, stringTimeReminder);
+            setReminder(taskToAdd);
         }
         finish();
     }
 
     /**
-     * update existing task - when push "update" on the action bar
+     * update existing ic_task_board - when push "update" on the action bar
      */
     private void updateTask() {
         TaskDAO dao = TaskDAO.getInstance(this, false);
@@ -309,13 +314,13 @@ public class CreateTaskActivity extends ActionBarActivity {
         Task updatedTask = new Task(id, title, stringTimeReminder,location, isPriority, notes);
         updatedTask.setId(taskId);
 
-        //update task in DB
+        //update ic_task_board in DB
         dao.updateTask(updatedTask, taskPosition);
         Toast.makeText(this, title + " updated", Toast.LENGTH_LONG).show();
 
         //user set reminder
         if(isReminder){
-            setReminder(id, title, stringTimeReminder);
+            setReminder(updatedTask);
         }
         finish();
     }
@@ -352,7 +357,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                     setLocationTxt.setText(location);
                 }
                 else {
-                    setLocationButton.setImageResource(R.drawable.ic_location_opa);
+                    setLocationButton.setImageResource(R.drawable.ic_location_gray);
                     setLocationTxt.setText("");
                 }
             }
@@ -362,7 +367,7 @@ public class CreateTaskActivity extends ActionBarActivity {
     /**
      * open the image picker dialog
      */
-    public void Notes_Dialog() {
+    public void notesDialog() {
         picker = new Dialog(CreateTaskActivity.this);
         picker.setContentView(R.layout.description_layout);
         picker.setTitle("Enter Task Description");
@@ -370,7 +375,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         final EditText description = (EditText)picker.findViewById(R.id.description);
         description.setText(notes);
 
-        final Button setDescription = (Button)picker.findViewById(R.id.set_descriptiom);
+        final Button setDescription = (Button)picker.findViewById(R.id.set_description);
         final Button clearDescription = (Button)picker.findViewById(R.id.clear);
 
         setDescription.setOnClickListener(new View.OnClickListener() {
@@ -383,7 +388,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                     setNotesButton.setImageResource(R.drawable.ic_note);
                 }
                 else {
-                    setNotesButton.setImageResource(R.drawable.ic_note_opa);
+                    setNotesButton.setImageResource(R.drawable.ic_note_gray);
                 }
             }
         });
@@ -393,7 +398,7 @@ public class CreateTaskActivity extends ActionBarActivity {
                 notes = "";
                 picker.dismiss();
                 final ImageView setNotesButton = (ImageView) findViewById(R.id.add_notes_button);
-                setNotesButton.setImageResource(R.drawable.ic_note_opa);
+                setNotesButton.setImageResource(R.drawable.ic_note_gray);
             }
         });
         picker.show();
@@ -409,7 +414,7 @@ public class CreateTaskActivity extends ActionBarActivity {
         //indicate package
         listenIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
         //message to display while listening
-        listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a task!");
+        listenIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a ic_task_board!");
         //set speech model
         listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         //specify number of results to retrieve
@@ -421,27 +426,14 @@ public class CreateTaskActivity extends ActionBarActivity {
 
 
     /**
-     * Set he Time Reminder
-     * @param id
-     * @param title
-     * @param date
+     * Sets the Time Reminder
+     * @param taskObj - Task object
      */
-    public void setReminder(Long id, String title,  String date){
+    public void setReminder(Task taskObj){
         //calculating time for the reminder
         long timeToWait = calendar.getTimeInMillis();
 
-        List<String> tasksList = new ArrayList<String>();
-        tasksList.add(id.toString());
-        tasksList.add(title);
-        tasksList.add(date);
-
-        //AlarmManager for invoke ReminderBroadcastReceiver
-        Intent intent = new Intent("il.ac.shenkar.reminder_broadcast");
-        intent.putExtra("id", id);
-        intent.putStringArrayListExtra(EXTRA_LIST, (ArrayList<String>) tasksList);
-        PendingIntent pendingIntent =   PendingIntent.getBroadcast(this, id.intValue(), intent, 0);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeToWait, pendingIntent);
+        alarmManager.setAlarm(taskObj, calendar);
     }
 
 

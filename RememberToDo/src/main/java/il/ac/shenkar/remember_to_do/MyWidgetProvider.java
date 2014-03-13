@@ -8,6 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
+/**
+ * This class manage the creation of the HomeScreen Widget
+ * @author Dror Afargan & Ran Nahmijas
+ */
 public class MyWidgetProvider extends AppWidgetProvider {
 
     private static final String ACTION_CLICK = "ACTION_CLICK";
@@ -30,7 +34,7 @@ public class MyWidgetProvider extends AppWidgetProvider {
             String time= "";
             String location= "";
 
-            // Get the next task details and set the text
+            // Get the next ic_task_board details and set the text
             if(!dao.isEmpty()) {
                 if (taskPos >= dao.getCount() || dao.getItem(taskPos) == null) {
                     taskPos = 0;

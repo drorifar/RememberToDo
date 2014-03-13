@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myapp="http://schemas.android.com/apk/res-auto">
-    <!-- Add new task, should appear as action button -->
+    <!-- Add new ic_task_board, should appear as action button -->
     <item android:id="@+id/action_addTask"
         android:icon="@drawable/ic_action_new"
         android:title="@string/action_add"

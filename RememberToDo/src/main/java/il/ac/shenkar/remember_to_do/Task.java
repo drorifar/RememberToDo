@@ -1,26 +1,33 @@
 package il.ac.shenkar.remember_to_do;
 
-import android.net.Uri;
 
 /**
- * the task DM
- */
-public class Task {
+* This class represent Task object
+* @author Dror Afargan & Ran Nahmijas
+*/
+public class Task
+{
+    //ic_task_board id
     private Long id;
+    //ic_task_board title
     private String title;
+    //ic_task_board date
     private String date;
+    //if the ic_task_board is in priority
     private boolean isPriority;
+    //ic_task_board location
     private String location;
+    //extra notes
     private String notes;
 
     public Task(){}
 
     /**
      * Constructor
-     * @param id - task id
-     * @param title - task title
-     * @param date - task date
-     * @param location - task location
+     * @param id - ic_task_board id
+     * @param title - ic_task_board title
+     * @param date - ic_task_board date
+     * @param location - ic_task_board location
      * @param isPriority - boolean if its high priority
      */
     public Task(Long id, String title, String date, String location, boolean isPriority, String notes){
@@ -41,7 +48,9 @@ public class Task {
         setNotes(taskFromCloud.getNotes());
     }
 
-    //setters and getters
+    /**
+     * setters and getters
+     */
 
     public void setTitle(String title){
         this.title = title;

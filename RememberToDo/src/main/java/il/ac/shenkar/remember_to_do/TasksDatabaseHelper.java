@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * This class extends SQLiteOpenHelper
- * It's manage database creation and version management.
+ * It's manage database creation and version management
+ *
+ * @author Dror Afargan & Ran Nahmijas
  */
 public class TasksDatabaseHelper extends SQLiteOpenHelper {
     // All Static variables

@@ -4,9 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +49,11 @@ public class TaskDAO implements ITaskDAO  {
 
     /**
      * accepts new TaskDetails object and adding him into the DB
-     * @param taskObj (task)
+     * @param taskObj (ic_task_board)
      */
     @Override
     public void addTask(Task taskObj) {
-        //add new task object to Tasks list
+        //add new ic_task_board object to Tasks list
         taskList.add(taskObj);
 
         //add to Database
@@ -76,16 +74,16 @@ public class TaskDAO implements ITaskDAO  {
         long id = database.insert(TaskTable.TABLE_TASKS, null, values);
 
         database.close();
-        System.out.println("----------  " + taskObj.getId() + " \" "+ isPriority + taskObj.getTitle() + " \""  + " \""+ " ADDED   ----------");
+        System.out.println("----------  " + taskObj.getId() + " \" "+ isPriority+ " " + taskObj.getTitle() + " \""  + " \""+ " ADDED   ----------");
     }
 
     /**
-     * Accepts TaskDetails object and removes this task from the DB
-     * @param taskObj (task)
+     * Accepts TaskDetails object and removes this ic_task_board from the DB
+     * @param taskObj (ic_task_board)
      */
     @Override
     public void deleteTask(Task taskObj) {
-        //add new task object to Tasks list
+        //add new ic_task_board object to Tasks list
         taskList.remove(taskObj);
 
         database = dbHelper.getWritableDatabase();

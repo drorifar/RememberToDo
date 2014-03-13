@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myapp="http://schemas.android.com/apk/res-auto">
-    <!-- Add new task, should appear as action button -->
+    <!-- Add new ic_task_board, should appear as action button -->
     <item android:id="@+id/action_createTask"
         android:title="@string/action_create"
         myapp:showAsAction="ifRoom|withText" />

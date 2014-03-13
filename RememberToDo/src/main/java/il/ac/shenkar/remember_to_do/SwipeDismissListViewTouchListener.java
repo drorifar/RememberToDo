@@ -1,11 +1,5 @@
 package il.ac.shenkar.remember_to_do;
 
-/**
- * Created by Administrator on 02/03/14.
- */
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -18,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * class that create the delete task Swipe animation
+ * Class that create the delete ic_task_board Swipe animation
  */
 public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values

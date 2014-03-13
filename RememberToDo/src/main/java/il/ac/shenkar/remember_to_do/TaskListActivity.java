@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,17 +27,23 @@ import com.parse.ParseQuery;
 import java.util.List;
 
 /**
- * the main_list_view activity - the tasks list view
+ *
+ * This class is the main_list_view activity - the tasks list view
+ * @author Dror Afargan & Ran Nahmijas
+ *
  */
 public class TaskListActivity extends ActionBarActivity {
 
     private Context context;
     TaskListBaseAdapter adapter = null;
     private ActionMode mActionMode;
+
     private TaskDAO dao;
     int selectedItemPosition;
     private ShareActionProvider mShareActionProvider;
     String userName;
+
+    private ReminderAlarmManager alarmManager;
     public enum CloudOptionsEnum {UPLOAD, DOWNLOAD}
 
     public TaskListActivity() {}
@@ -49,6 +54,8 @@ public class TaskListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_list_view);
 
+        alarmManager = new ReminderAlarmManager(this);
+
         //initializing the parse cloud
         ParseObject.registerSubclass(TaskForCloud.class);
         Parse.initialize(this, "ADShhrgdbLs87kgP0vUrI9mQfwRnJ2RoNpSUevOB", "Q1fl5Hzx9dtxoO76c8IQt29VnRnzMs5hlyYHD8v3");
@@ -57,12 +64,13 @@ public class TaskListActivity extends ActionBarActivity {
 
         dao = TaskDAO.getInstance(this, false);
 
+        //list view
         ListView listView = (ListView) findViewById(R.id.listV_main);
         listView.setEmptyView(findViewById(R.id.emptyView));
         adapter = new TaskListBaseAdapter(this);
         listView.setAdapter(adapter);
 
-
+        //add ic_task_board button listener
         final ImageView addNewTaskButton = (ImageView) findViewById(R.id.add_task_button);
         addNewTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,13 +79,17 @@ public class TaskListActivity extends ActionBarActivity {
             }
         });
 
+        //deleting ic_task_board from the view by swipe
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener
                 (listView, new SwipeDismissListViewTouchListener.OnDismissCallback() {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions)
                         {
-                            Toast.makeText(getBaseContext(), "delete", Toast.LENGTH_SHORT).show();
-                            dao.deleteTask(dao.getItem(position));
+                            Task taskToDelete = dao.getItem(position);
+                            dao.deleteTask(taskToDelete);
+                            alarmManager.cancelAlarm(taskToDelete);
+                            Toast.makeText(getBaseContext(), taskToDelete.getTitle() + " delete", Toast.LENGTH_SHORT).show();
+
                             adapter.notifyDataSetChanged();
                         }
                     }
@@ -88,7 +100,7 @@ public class TaskListActivity extends ActionBarActivity {
         // short click on one row
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parentAdapter, View view, int position, long id) {
-                 selectedItemPosition = position;
+                selectedItemPosition = position;
                 editTask(position);
             }
         });
@@ -109,6 +121,10 @@ public class TaskListActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * edit ic_task_board handling
+     * @param position
+     */
     public void editTask (int position){
         Bundle taskDetailsBundle = new Bundle();
         taskDetailsBundle.putInt("position",position);
@@ -125,6 +141,10 @@ public class TaskListActivity extends ActionBarActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * add new ic_task_board, start CreateTaskActivity
+     * @param view
+     */
     public void addTask(View view) {
         startActivity(new Intent(context, CreateTaskActivity.class));
     }
@@ -162,8 +182,10 @@ public class TaskListActivity extends ActionBarActivity {
 
                 case R.id.action_delete:
                     //delete the list item in the selected position
-                    dao.deleteTask(dao.getItem(selectedItemPosition));
-                    Toast.makeText(getBaseContext(), "deleted", Toast.LENGTH_SHORT).show();
+                    Task taskToDelete = dao.getItem(selectedItemPosition);
+                    dao.deleteTask(taskToDelete);
+                    alarmManager.cancelAlarm(taskToDelete);
+                    Toast.makeText(getBaseContext(), taskToDelete.getTitle() + " deleted", Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
@@ -199,6 +221,7 @@ public class TaskListActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -217,10 +240,10 @@ public class TaskListActivity extends ActionBarActivity {
                 adapter.notifyDataSetChanged();
                 return true;
             case R.id.action_upload_to_cloud:
-                User_Dialog(CloudOptionsEnum.UPLOAD);
+                userDialog(CloudOptionsEnum.UPLOAD);
                 return true;
             case R.id.action_download_from_cloud:
-                User_Dialog(CloudOptionsEnum.DOWNLOAD);
+                userDialog(CloudOptionsEnum.DOWNLOAD);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -230,13 +253,15 @@ public class TaskListActivity extends ActionBarActivity {
     /**
      * open the image picker dialog
      */
-    public void User_Dialog(final CloudOptionsEnum cloudOption) {
+    public void userDialog(final CloudOptionsEnum cloudOption) {
         final Dialog picker = new Dialog(TaskListActivity.this);
-        picker.setContentView(R.layout.user_layout);
-        picker.setTitle("Enter User Name");
+        picker.setContentView(R.layout.user_details_layout);
+        picker.setTitle("Enter User Details");
 
         final EditText user_name = (EditText)picker.findViewById(R.id.user_name);
         user_name.setText(userName);
+
+        final EditText password = (EditText)picker.findViewById(R.id.password);
 
         final Button setUserName = (Button)picker.findViewById(R.id.set);
 
@@ -244,12 +269,13 @@ public class TaskListActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 userName = user_name.getText().toString();
+                String pass = password.getText().toString();
                 picker.dismiss();
                 if (userName != null || !userName.isEmpty()) {
                     if (cloudOption == CloudOptionsEnum.UPLOAD){
-                        uploadToCloud(userName);
+                        uploadToCloud(userName, pass);
                     }
-                    else downloadFromCloud(userName);
+                    else downloadFromCloud(userName, pass);
                 }
             }
         });
@@ -259,16 +285,16 @@ public class TaskListActivity extends ActionBarActivity {
     /**
      * upload all the user tasks to the cloud
      */
-    private void uploadToCloud(String userName) {
+    private void uploadToCloud(String userName, String password) {
         // delete all the user current tasks before uploading
-        deleteAllFromCloud(userName);
+        deleteAllFromCloud(userName, password);
         //get all the tasks from DB
         dao.getAllTasks(false);
 
         if (!dao.isEmpty()){
             for (int i = 0; i < dao.getCount(); i++) {
                 if (dao.getItem(i) != null){
-                    TaskForCloud todoItem = new TaskForCloud(dao.getItem(i), userName);
+                    TaskForCloud todoItem = new TaskForCloud(dao.getItem(i), userName, password);
                     todoItem.saveInBackground();
                 }
             }
@@ -279,11 +305,12 @@ public class TaskListActivity extends ActionBarActivity {
     /**
      * download all the user tasks from the cloud
      */
-    private void downloadFromCloud(String userName) {
+    private void downloadFromCloud(String userName, String password) {
         // Define the class we would like to query
         ParseQuery<TaskForCloud> query = ParseQuery.getQuery(TaskForCloud.class);
         // Define our query conditions
         query.whereEqualTo("user_name", userName);
+        query.whereEqualTo("password", password);
         // Execute the find asynchronously
         query.findInBackground(new FindCallback<TaskForCloud>() {
             public void done(List<TaskForCloud> itemList, ParseException e) {
@@ -296,8 +323,7 @@ public class TaskListActivity extends ActionBarActivity {
                     }
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getBaseContext(),"User Name Has No Tasks", Toast.LENGTH_LONG).show();
-                    Log.d("item", "Error: " + e.getMessage());
+                    Toast.makeText(getBaseContext(),"User Has No Tasks", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -306,11 +332,12 @@ public class TaskListActivity extends ActionBarActivity {
     /**
      * delete all the user tasks from the cloud
      */
-    private void deleteAllFromCloud(String userName){
+    private void deleteAllFromCloud(String userName, String password){
         // Define the class we would like to query
         ParseQuery<TaskForCloud> query = ParseQuery.getQuery(TaskForCloud.class);
         // Define our query conditions
         query.whereEqualTo("user_name", userName);
+        query.whereEqualTo("password", password);
         // Execute the find asynchronously
         query.findInBackground(new FindCallback<TaskForCloud>() {
             public void done(List<TaskForCloud> itemList, ParseException e) {

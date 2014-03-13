@@ -1,9 +1,14 @@
 package il.ac.shenkar.remember_to_do;
 
-import com.parse.ParseObject;
 import com.parse.ParseClassName;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+
+/**
+ * This class represent Task object that uploaded or dawnloaded fro the cloud
+ * @author Dror Afargan & Ran Nahmijas
+ */
 @ParseClassName("taskItem")
 public class TaskForCloud extends ParseObject {
 
@@ -22,7 +27,7 @@ public class TaskForCloud extends ParseObject {
     }
 
     // constructor that contains core properties
-    public TaskForCloud(Task task, String userName){
+    public TaskForCloud(Task task, String userName, String password){
         if (task!=null) {
             setTitle(task.getTitle());
             setDate(task.getDate());
@@ -35,6 +40,7 @@ public class TaskForCloud extends ParseObject {
             setNotes(task.getNotes());
 
             setUserName(userName);
+            setPassword(password);
         }
     }
 
@@ -85,6 +91,14 @@ public class TaskForCloud extends ParseObject {
 
     public void setUserName(String value) {
         put("user_name", value);
+    }
+
+    public String getPassword() {
+        return getString("password");
+    }
+
+    public void setPassword(String value) {
+        put("password", value);
     }
 
     // Get the user for this item

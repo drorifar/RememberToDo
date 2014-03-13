@@ -5,7 +5,8 @@ import android.util.Log;
 
 /**
  * This class represent table of tasks in the DB
- * t's manage database creation
+ * it's manage database creation
+ * @author Dror Afargan & Ran Nahmijas
  */
 public class TaskTable {
     // Task Table name

@@ -4,8 +4,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    style="@style/Theme.AppCompat"
-    android:background="#c7c7c7">>
+    style="@style/Theme.AppCompat">
 
     <EditText android:id="@+id/description"
         android:layout_width="fill_parent"
@@ -24,7 +23,7 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/set_descriptiom"
+            android:id="@+id/set_description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/set"

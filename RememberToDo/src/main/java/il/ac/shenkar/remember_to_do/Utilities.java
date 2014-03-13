@@ -18,6 +18,7 @@ import java.util.Locale;
 
 /**
  * Concentrate Useful methods
+ * @author Dror Afargan & Ran Nahmijas
  */
 public class Utilities {
 

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    style="@style/Theme.AppCompat"
+    android:id="@+id/mainLayout"
+    android:background="#cccccc">
+
+    <EditText android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/task_title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="37dp"
+        android:imeOptions="actionDone"
+        android:singleLine="true"/>
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/add_voice_button"
+        android:src="@drawable/ic_device_access_mic"
+        android:adjustViewBounds="true"
+        android:layout_alignBottom="@+id/title"
+        android:layout_alignRight="@+id/title"
+        android:layout_alignEnd="@+id/title" />
+
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/add_clock_reminder"
+        android:src="@drawable/ic_alarm_gray"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/title"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="45dp" />
+
+        <TextView android:id="@+id/clock_reminder_txt"
+            android:textSize="15sp"
+            android:textColor="#292929"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            android:layout_gravity="center_vertical"
+            android:layout_alignBottom="@+id/add_clock_reminder"
+            android:layout_alignLeft="@+id/location_reminder_button"
+            android:layout_alignStart="@+id/location_reminder_button" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/location_reminder_button"
+            android:src="@drawable/ic_location_gray"
+            android:adjustViewBounds="true"
+            android:layout_below="@+id/clock_reminder_txt"
+            android:layout_toRightOf="@+id/add_clock_reminder"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp" />
+
+        <TextView android:id="@+id/location_reminder_txt"
+            android:textSize="15sp"
+            android:textColor="#292929"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            android:singleLine="false"
+            android:layout_gravity="center_vertical"
+            android:layout_alignBottom="@+id/location_reminder_button"
+            android:layout_alignLeft="@+id/add_notes_button"
+            android:layout_alignStart="@+id/add_notes_button" />
+
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/add_notes_button"
+            android:src="@drawable/ic_note_gray"
+            android:adjustViewBounds="true"
+            android:layout_below="@+id/location_reminder_txt"
+            android:layout_toRightOf="@+id/location_reminder_button"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp" />
+
+
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/priority_button"
+            android:src="@drawable/ic_important_gray"
+            android:adjustViewBounds="true"
+            android:layout_below="@+id/add_notes_button"
+            android:layout_toRightOf="@+id/add_notes_button"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp" />
+
+</RelativeLayout>
