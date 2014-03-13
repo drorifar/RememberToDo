@@ -31,7 +31,6 @@ import java.util.List;
  *
  * This class is the main_list_view activity - the tasks list view
  * @author Dror Afargan & Ran Nahmijas
- *
  */
 public class TaskListActivity extends ActionBarActivity {
 
