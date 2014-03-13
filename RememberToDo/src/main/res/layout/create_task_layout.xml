@@ -6,8 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     style="@style/Theme.AppCompat"
-    android:id="@+id/mainLayout"
-    android:background="#cccccc">
+    android:id="@+id/mainLayout">
 
     <EditText android:id="@+id/title"
         android:layout_width="fill_parent"
